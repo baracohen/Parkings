@@ -58,6 +58,7 @@
   }
   .isSelectedBorder {
     border: 2px solid greenyellow;
+    opacity: 0.7;
   }
   .number-parking {
     font-size: 40px;

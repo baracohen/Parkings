@@ -15,7 +15,7 @@
           <div v-for="(obj, index) in theData" v-bind:key="index">
             for {{obj.date}}
           <div class="grid">
-            <ParkingCard v-for="(obj, index) in obj.parkings" v-bind:key="index"  :parkingId="obj.parkingId" :isAvalable="obj.isAvalable"/>
+            <ParkingCard v-for="(obj, index) in obj.parkings" v-bind:key="index" :clickedFunc="onParkingClicked" :parkingId="obj.parkingId" :isAvalable="obj.isAvalable"/>
           </div>
           </div>
           <div class="spinner" v-if="IsSpinnerShow">
@@ -32,6 +32,7 @@
 import Spinner from '../components/spinner.vue'
 import ParkingCard from '../components/parkingCard.vue'
 import Datepicker from 'vue3-datepicker'
+import store from "../store/";
 
 export default {
   components:{Spinner, ParkingCard,Datepicker},
@@ -67,9 +68,13 @@ export default {
         ]
       },
 
-    parkingClicked(data, isSelected) {
-
-    },
+    onParkingClicked(data, isSelected) {
+          if(isSelected) {
+            store.dispatch("addToParkingsToAdd", data);
+          } else {
+            store.dispatch("deleteFromParkingsToAdd", data);
+          }
+      },
 
     setDisabledDays() {
       let _newDate = this.picked.getDate() + 7;

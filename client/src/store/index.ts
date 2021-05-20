@@ -26,7 +26,6 @@ const store = createStore({
         deleteFromParkingsToDelete(state, newVal) {
             state.parkingsToDelete.forEach((element, index) => 
             {
-                debugger;
                 if(element && element.parkingId) {
                     if(element.parkingId === newVal.parkingId) {
                         state.parkingsToDelete.splice(index, 1);
@@ -34,9 +33,19 @@ const store = createStore({
                     }
                 }
             });
-            console.log(state.parkingsToDelete)
 
-        }        
+        },
+        deleteFromParkingsToAdd(state, newVal) {
+            state.parkingsToAdd.forEach((element, index) => 
+            {
+                if(element && element.parkingId) {
+                    if(element.parkingId === newVal.parkingId) {
+                        state.parkingsToAdd.splice(index, 1);
+                        return false;
+                    }
+                }
+            });
+        } 
     },
     actions: {
         saveUser({commit}, user){
@@ -49,6 +58,9 @@ const store = createStore({
             commit('addToParkingsToAdd', obj)
         },
         deleteFromParkingsToDelete({commit}, obj){
+            commit('deleteFromParkingsToDelete', obj)
+        },
+        deleteFromParkingsToAdd({commit}, obj){
             commit('deleteFromParkingsToDelete', obj)
         },
                         

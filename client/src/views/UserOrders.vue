@@ -86,7 +86,6 @@ export default {
 
       },
       onParkingClicked(data, isSelected) {
-        debugger;
           if(isSelected) {
             store.dispatch("addToParkingsToDelete", data);
           } else {
