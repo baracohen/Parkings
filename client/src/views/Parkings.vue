@@ -10,6 +10,7 @@
           <div>
             <h1>Welcome back {{$store.state.user.FirstName}}! </h1>
             <h6> choose date</h6>
+            <datepicker v-model="picked"  :v-disabledDates="this.disabledDates" />
           </div>
           <div v-for="(obj, index) in theData" v-bind:key="index">
             for {{obj.date}}
@@ -30,28 +31,29 @@
 // @ is an alias to /src
 import Spinner from '../components/spinner.vue'
 import ParkingCard from '../components/parkingCard.vue'
-
+import Datepicker from 'vue3-datepicker'
 
 export default {
-  components:{Spinner, ParkingCard},
+  components:{Spinner, ParkingCard,Datepicker},
   data(){
       return {
           isLoggedIn: false,
           IsAllertShow: false,
-          IsSpinnerShow: true,
+          IsSpinnerShow: false,
           email: "",
           password: "",
           datepicker: '',
-          theData:''
-
+          theData:'',
+          picked:new Date(),
+          disabledDates: {}
       }
   },
   created() {
-    this.getParkingsForToday()
+    this.getParkingsForToday();
+    this.setDisabledDays();
   },
   methods: {
       getParkingsForToday() {
-        this.IsSpinnerShow = true;
         this.theData = [
             {date:"24.05.16",
               parkings:[
@@ -63,8 +65,20 @@ export default {
               ]
             },
         ]
-      }
+      },
 
+    parkingClicked(data, isSelected) {
+
+    },
+
+    setDisabledDays() {
+      let _newDate = this.picked.getDate() + 7;
+      this.disabledDates = {
+        from: this.picked,
+        to: _newDate,
+        daysOfMonth: "05"
+      };
+    },
   },
 }
 </script>
@@ -96,9 +110,6 @@ export default {
             content: "";
             display: block;
           }
-          .grid > div > label{
-            align-items: center;
-          }           
     }
 
 </style>

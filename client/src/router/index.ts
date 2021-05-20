@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Home from '../views/Home.vue'
 import Parkings from '../views/Parkings.vue'
 import ParkingView from '../views/ParkingView.vue'
+import UserOrders from '../views/UserOrders.vue'
 import Login from '../views/Login.vue'
 
 const routes: Array<RouteRecordRaw> = [
@@ -24,7 +25,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/parkingView/:parkingId',
     name: 'ParkingView',
     component: ParkingView
-  }  
+  },
+  {
+    path: '/userOrders',
+    name: 'UserOrders',
+    component: UserOrders
+  }   
 ]
 
 const router = createRouter({

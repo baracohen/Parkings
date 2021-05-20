@@ -1,14 +1,14 @@
 <template>
   <div class="container">
-    <h1>Hey {{ $store.state.user.FirstName }}</h1>
+    <h1>Hey {{ $store.state.user.FirstName }} {{ $store.state.user.LastName }}</h1>
     <h5>Welcome back</h5>
-
     <p>
       Your parking spot is:
     </p>
+      <label class="parkingSpot">{{parkingSpot}}</label>
     <div>
-      <button v-on:click="redirect" type="button" class="btn btn-primary btn-lg ">Order parking</button>
-      <button v-on:click="redirect" type="button" class="btn btn-primary btn-lg ">My orders</button>
+      <button @click="redirect" type="button" class="btn btn-primary btn-lg ">Order parking</button>
+      <button @click="redirectMyOrders" type="button" class="btn btn-primary btn-lg ">My orders</button>
     </div>
   </div>
 </template>
@@ -20,10 +20,23 @@ export default defineComponent({
   name: 'HomeComponent',
   props: {
   },
+  data(){
+      return {
+          parkingSpot: "1" 
+      }
+  },
 
   methods:{
+    getParkingSpot() {
+
+
+    },
+
     redirect() {
         this.$router.push({ path: '/parkings' })
+    },
+    redirectMyOrders() {
+        this.$router.push({ path: '/userOrders' })
     }
 
   }
@@ -46,4 +59,14 @@ li {
 a {
   color: #42b983;
 }
+.parkingSpot {
+  align-items: center;
+  background-color: darkgrey;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  font-size: 75px;
+  margin: 40px;
+}
+
 </style>

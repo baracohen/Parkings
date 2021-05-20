@@ -38,7 +38,6 @@ export default {
       getParkingData() {
         this.IsSpinnerShow = true;
       }
-
   },
 }
 </script>

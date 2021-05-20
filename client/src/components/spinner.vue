@@ -42,6 +42,4 @@ export default {
     transform: rotate(1800deg);
   }
 }
-
-
 </style>

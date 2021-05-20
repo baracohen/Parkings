@@ -43,19 +43,12 @@
 import Spinner from '../components/spinner.vue'
 import store from "../store";
 import parkingService from '../api/parkingService'
+
 export default {
    components:{Spinner},
   data(){
 
       return {
-  
-          user:{
-            isLoggedIn: false,
-            IsAllertShow: false,
-            IsSpinnerShow: false,
-            email: "",
-            password: "",
-          }
       }
   },
     watch: {
@@ -65,20 +58,13 @@ export default {
   },
   methods: {
      async login(event) {
-        event.preventDefault()
+        event.preventDefault();
         this.IsSpinnerShow = true
 
         let _user = await parkingService.login(this.email, this.password);
-        if(_user != undefined) {
-            let user= {
-            userId:null,
-            FirstName:"Barak",
-            LastName:"",
-            pic:"",
-        }
-            localStorage.user = user;
-            store.dispatch("saveUser", user)
-
+        if(_user && _user.data !=  undefined) {
+            localStorage.setItem('user', JSON.stringify(_user.data));
+            store.dispatch("saveUser", _user.data);
             this.redirect();
         }
 
@@ -101,7 +87,7 @@ export default {
         .box-shadow.login{
             box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
             width: 100%;
-            padding: 40px;
+            padding: 60px;
         }
         .title-wrapper {
             align-items: center;
