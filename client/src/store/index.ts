@@ -45,7 +45,13 @@ const store = createStore({
                     }
                 }
             });
-        } 
+        } ,
+        cleanParkingsToAdd(state) {
+            state.parkingsToAdd =[];
+        },
+        cleanParkingsToDelete(state) {
+            state.parkingsToDelete =[];
+        },
     },
     actions: {
         saveUser({commit}, user){
@@ -61,7 +67,13 @@ const store = createStore({
             commit('deleteFromParkingsToDelete', obj)
         },
         deleteFromParkingsToAdd({commit}, obj){
-            commit('deleteFromParkingsToDelete', obj)
+            commit('deleteFromParkingsToAdd', obj)
+        },
+        cleanParkingsToAdd({commit}, obj){
+            commit('cleanParkingsToAdd')
+        },
+        cleanParkingsToDelete({commit}, obj){
+            commit('cleanParkingsToDelete')
         },
                         
     },

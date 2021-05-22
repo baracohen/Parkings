@@ -50,32 +50,38 @@ router.post('/userParkings', async (req, res) => {
             {
                 date:"24.05.16",
                 parkingId:1,
-                userId: 1
+                userId: 1,
+                floor:""
             },
             {
                 date:"25.05.16",
                 parkingId:3,
-                userId: 1
+                userId: 1,
+                floor:"3"
             },
             {
                 date:"27.05.16",
                 parkingId:69,
-                userId: 1
+                userId: 1,
+                floor:"3"
             }, 
             {
                 date:"28.05.16",
                 parkingId:79,
-                userId: 1
+                userId: 1,
+                floor:"3"
             },    
             {
                 date:"29.05.16",
                 parkingId:79,
-                userId: 1
+                userId: 1,
+                floor:"3"
             }, 
             {
                 date:"30.05.16",
                 parkingId:79,
-                userId: 1
+                userId: 1,
+                floor:"3"
             },                        
                     
         ]
@@ -85,6 +91,235 @@ router.post('/userParkings', async (req, res) => {
         return false;
     }
 });
-
+router.post('/todayParkings', async (req, res) => {
+        res.send(
+            [{
+                date: new Date(),
+                parkings:[
+                    {
+                        date:"24.05.16",
+                        parkingId:162,
+                        userId: 1,
+                        floor:"",
+                        isAvalable:true
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:153,
+                        userId: 2,
+                        floor:"3",
+                        isAvalable:true
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:56,
+                        userId: 3,
+                        floor:"3",
+                        isAvalable:false
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:79,
+                        userId: 4,
+                        floor:"3",
+                        isAvalable:false
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:69,
+                        userId: 5,
+                        floor:"3",
+                        isAvalable:false
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:82,
+                        userId: 6,
+                        floor:"3",
+                        isAvalable:false
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:182,
+                        userId: 7,
+                        floor:"3",
+                        isAvalable:true
+                    }
+                ]
+                
+            }]
+        );
+});
+router.post('/availableParkings', async (req, res) => {
+    res.send(
+        [
+            {
+                date: '22.05.2021',
+                parkings:[
+                    {
+                        date:"24.05.16",
+                        parkingId:162,
+                        userId: 1,
+                        floor:"3",
+                        isAvalable:true
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:153,
+                        userId: 2,
+                        floor:"3",
+                        isAvalable:true
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:56,
+                        userId: 3,
+                        floor:"3",
+                        isAvalable:false
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:79,
+                        userId: 4,
+                        floor:"3",
+                        isAvalable:false
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:69,
+                        userId: 5,
+                        floor:"3",
+                        isAvalable:false
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:82,
+                        userId: 6,
+                        floor:"3",
+                        isAvalable:false
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:182,
+                        userId: 7,
+                        floor:"3",
+                        isAvalable:true
+                    }
+                ]
+            
+            },
+            {
+                date: '23.05.2021',
+                parkings:[
+                    {
+                        date:"24.05.16",
+                        parkingId:162,
+                        userId: 1,
+                        floor:"3",
+                        isAvalable:true
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:153,
+                        userId: 2,
+                        floor:"3",
+                        isAvalable:true
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:56,
+                        userId: 3,
+                        floor:"3",
+                        isAvalable:true
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:79,
+                        userId: 4,
+                        floor:"3",
+                        isAvalable:true
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:69,
+                        userId: 5,
+                        floor:"3",
+                        isAvalable:false
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:82,
+                        userId: 6,
+                        floor:"3",
+                        isAvalable:true
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:182,
+                        userId: 7,
+                        floor:"3",
+                        isAvalable:false
+                    }
+                ]
+            
+            },
+            {
+                date: '24.05.2021',
+                parkings:[
+                    {
+                        date:"24.05.16",
+                        parkingId:162,
+                        userId: 1,
+                        floor:"3",
+                        isAvalable:true
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:153,
+                        userId: 2,
+                        floor:"3",
+                        isAvalable:true
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:56,
+                        userId: 3,
+                        floor:"3",
+                        isAvalable:true
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:79,
+                        userId: 4,
+                        floor:"3",
+                        isAvalable:true
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:69,
+                        userId: 5,
+                        floor:"3",
+                        isAvalable:true
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:82,
+                        userId: 6,
+                        floor:"3",
+                        isAvalable:true
+                    },
+                    {
+                        date:"24.05.16",
+                        parkingId:182,
+                        userId: 7,
+                        floor:"3",
+                        isAvalable:true
+                    }
+                ]
+            
+            }
+        ]
+    );
+});
 
 module.exports = router;

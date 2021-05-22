@@ -19,13 +19,15 @@
               <label class="date-label">for {{obj.date}}</label>
             </div>
             <div class="grid">
-              <ParkingCard v-bind:key="index" :clickedFunc="onParkingClicked" :parkingId="obj.parkingId" :isAvalable="false" :toDelete="true" :date="obj.date"/>
+              <ParkingCard v-bind:key="index" :floorNumber="obj.floor" :clickedFunc="onParkingClicked" :parkingId="obj.parkingId" :isAvalable="false" :toDelete="true" :date="obj.date"/>
             </div>
             </div>
           <div class="spinner" v-if="IsSpinnerShow">
             <Spinner />
           </div>
-          <button @click="showModal" class="btn btn-primary">Delete</button>
+          <div class="save-delete-oreders">
+            <button @click="showModal" class="btn btn-primary">Cancel parkings</button>
+          </div>
       </div>
       </div>
     </div>
@@ -52,6 +54,8 @@ export default {
   },
   created() {
     this.getUserParkings();
+    store.dispatch("cleanParkingsToDelete");
+
   },
   methods: {
       async getUserParkings() {

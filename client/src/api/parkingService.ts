@@ -48,8 +48,36 @@ export default class parkingService{
     
     }
     //update parkings
-    static updateParkings() {
-        
+    static getTodayParkings() {
+      return new Promise((resolve, rej) => {
+        try{
+            axios.post('http://localhost:5000/api/parkings/todayParkings')
+              .then((res) => {
+                resolve(res.data); 
+              }, (error) => {
+                rej(error)
+              });
+        }catch(err) {
+            rej(err)
+        }
+    })
     }
 
+    static getAvailableParkings(dates: Date[]) {
+      return new Promise((resolve, rej) => {
+        try{
+
+            axios.post('http://localhost:5000/api/parkings/availableParkings', {
+              dates:dates
+            })
+              .then((res) => {
+                resolve(res.data); 
+              }, (error) => {
+                rej(error)
+              });
+        }catch(err) {
+            rej(err)
+        }
+    })
+    }
 }

@@ -1,30 +1,38 @@
 <template>
-  <div v-on:click="parkingsClicked" class="" :class="'parkings-card-wrapper ' + ( isSelected ? ' isSelectedBorder ' : '') ">
+  <div  v-on:click="parkingsClicked"  :class="'parkings-card-wrapper ' + ( isSelected ? ' isSelectedBorder ' : '') ">
     <span :class="isAvalable ? 'green-dot':'red-dot'"></span>
     <label class="number-parking">{{parkingId}}</label>
-    <span >floor 3</span>
+    <div :v-if="floorNumber">
+      <span >floor {{floorNumber}}</span>
+    </div>
   </div>
 </template>
 
 <script>
+import swal from 'sweetalert';
 
   export default {
-    props:['parkingId', 'isAvalable', "toDelete", "date", "clickedFunc"],
+    props:['parkingId', 'isAvalable', "toDelete", "date", "clickedFunc", "floorNumber"],
     data: () => ({
       isSelected: false
     }),
 
     methods: {
       parkingsClicked () {
-        let user = localStorage.getItem('user');
-        let _data = {
-          parkingId: this.$props.parkingId,
-          userId: JSON.parse(user).userId,
-          date: this.$props.date
-        }
-        this.isSelected= !this.isSelected;
-        this.$props.clickedFunc(_data, this.isSelected);
-
+        if(this.$props.isAvalable || this.$props.toDelete) {
+          let user = localStorage.getItem('user');
+          let _data = {
+            parkingId: this.$props.parkingId,
+            userId: JSON.parse(user).userId,
+            date: this.$props.date
+          }
+          this.isSelected= !this.isSelected;
+          this.$props.clickedFunc(_data, this.isSelected);
+        } else {
+            swal("This Parking is not available", {
+                    icon: "error",
+                });
+            }
       },
     },
     

@@ -10,16 +10,33 @@
           <div>
             <h1>Welcome back {{$store.state.user.FirstName}}! </h1>
             <h6> choose date</h6>
-            <datepicker v-model="picked"  :v-disabledDates="this.disabledDates" />
+            <div class="row dates-wrapper">
+              <div class="col-md-3 "></div>
+              <div class="col-md-3 col-sm-12 start-date-wrapper">
+                <span>Start date</span>
+                <datepicker v-model="startDate"  />
+              </div>
+              <div class="col-md-3 col-sm-12 end-date-wrapper">
+                <span>End date</span>
+                <datepicker v-model="endDate"   />
+              </div>
+              <div class="col-md-3 "></div>
+            </div>
           </div>
-          <div v-for="(obj, index) in theData" v-bind:key="index">
-            for {{obj.date}}
-          <div class="grid">
-            <ParkingCard v-for="(obj, index) in obj.parkings" v-bind:key="index" :clickedFunc="onParkingClicked" :parkingId="obj.parkingId" :isAvalable="obj.isAvalable"/>
-          </div>
-          </div>
+          <button class="btn btn-primary w-25" @click="getAvailableParkings">Go!</button>
           <div class="spinner" v-if="IsSpinnerShow">
             <Spinner />
+          </div>
+          <div class="parking-view-wrapper" v-for="(obj, index) in theData" v-bind:key="index">
+            <div class="date-label-div">
+              <label class="date-label">for {{obj.date}}</label>
+            </div>
+          <div class="grid">
+            <ParkingCard v-for="(obj, index) in obj.parkings" :floorNumber="obj.floor" v-bind:key="index" :clickedFunc="onParkingClicked" :parkingId="obj.parkingId" :isAvalable="obj.isAvalable"/>
+          </div>
+          </div>
+          <div class="save-delete-oreders">
+            <button @click="saveParkings" class="btn btn-primary">Save parkings</button>
           </div>
       </div>
       </div>
@@ -33,44 +50,76 @@ import Spinner from '../components/spinner.vue'
 import ParkingCard from '../components/parkingCard.vue'
 import Datepicker from 'vue3-datepicker'
 import store from "../store/";
+import parkingService from '../api/parkingService'
+import commonUtils from '../utils/commonUtils'
+import swal from 'sweetalert';
 
 export default {
   components:{Spinner, ParkingCard,Datepicker},
   data(){
       return {
-          isLoggedIn: false,
-          IsAllertShow: false,
           IsSpinnerShow: false,
-          email: "",
-          password: "",
-          datepicker: '',
           theData:'',
-          picked:new Date(),
+          startDate:new Date(),
+          endDate:new Date(),
           disabledDates: {}
       }
   },
   created() {
-    this.getParkingsForToday();
-    this.setDisabledDays();
+    store.dispatch("cleanParkingsToAdd");
+    this.getTodayParkings();
+    //this.setDisabledDays();
+
   },
   methods: {
-      getParkingsForToday() {
-        this.theData = [
-            {date:"24.05.16",
-              parkings:[
-                {parkingId:1, isAvalable: true},
-                {parkingId:2, isAvalable: true},
-                {parkingId:3, isAvalable: true},
-                {parkingId:4, isAvalable: true},
-                {parkingId:5, isAvalable: false},
-              ]
-            },
-        ]
+      async getTodayParkings() {
+        this.IsSpinnerShow = true;
+        let data = await parkingService.getTodayParkings();
+
+        if(data && data.length > 0) {
+          let _data =[];
+          _data.push(data.shift());
+          let tempDate = new Date(_data[0].date);   
+          _data[0].date = commonUtils.setDateFormat(tempDate);
+
+          this.IsSpinnerShow = false;
+          this.theData = _data;
+        }
+      },
+
+      async getAvailableParkings() {
+        this.IsSpinnerShow = true;
+        let range = commonUtils.getRangeDates(this.startDate, this.endDate);
+
+        if(range && range.length > 0) {
+          let newDateFormats = [];
+          range.forEach((obj) => {
+            newDateFormats.push(commonUtils.setDateFormat(obj));
+          });
+          
+          let data = await parkingService.getAvailableParkings(newDateFormats);
+
+          if(data && data.length > 0) {
+            this.IsSpinnerShow = false;
+            this.theData = data;
+          }
+        }
+      },
+
+      saveParkings() {
+           swal("Congrats! all the parkings are saved for you!", {
+                    icon: "success",
+            });
       },
 
     onParkingClicked(data, isSelected) {
+
           if(isSelected) {
-            store.dispatch("addToParkingsToAdd", data);
+            let isExist = this.$store.state.parkingsToAdd.filter((obj) => {return obj.userId == data.userId && obj.date == data.date});
+            if(isExist && isExist.length > 0) {
+              store.dispatch("deleteFromParkingsToAdd", isExist.shift());
+            }
+              store.dispatch("addToParkingsToAdd", data);
           } else {
             store.dispatch("deleteFromParkingsToAdd", data);
           }
@@ -115,6 +164,17 @@ export default {
             content: "";
             display: block;
           }
+          .dates-wrapper {
+            display: flex;
+            margin: 50px;
+            position: relative;
+          }
+          .parking-view-wrapper {
+            border-bottom: 1px solid grey;
+          }
+    }
+    .save-delete-oreders {
+      margin: 40px;
     }
 
 </style>
