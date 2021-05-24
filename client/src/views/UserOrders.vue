@@ -19,7 +19,7 @@
               <label class="date-label">for {{obj.date}}</label>
             </div>
             <div class="grid">
-              <ParkingCard v-bind:key="index" :floorNumber="obj.floor" :clickedFunc="onParkingClicked" :parkingId="obj.parkingId" :isAvalable="false" :toDelete="true" :date="obj.date"/>
+              <ParkingCard v-bind:key="index" :prakingObj="obj" :floorNumber="obj.floor" :clickedFunc="onParkingClicked" :parkingId="obj.parkingId" :isAvalable="false" :toDelete="true" :date="obj.date"/>
             </div>
             </div>
           <div class="spinner" v-if="IsSpinnerShow">

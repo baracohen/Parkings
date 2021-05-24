@@ -27,12 +27,12 @@
           <div class="spinner" v-if="IsSpinnerShow">
             <Spinner />
           </div>
-          <div class="parking-view-wrapper" v-for="(obj, index) in theData" v-bind:key="index">
+          <div class="parking-view-wrapper" v-for="(obj, index) in $store.state.parkingsToShow" v-bind:key="index">
             <div class="date-label-div">
               <label class="date-label">for {{obj.date}}</label>
             </div>
           <div class="grid">
-            <ParkingCard v-for="(obj, index) in obj.parkings" :floorNumber="obj.floor" v-bind:key="index" :clickedFunc="onParkingClicked" :parkingId="obj.parkingId" :isAvalable="obj.isAvalable"/>
+            <ParkingCard v-for="(obj, index) in obj.parkings" :prakingObj="obj" v-bind:key="index" :clickedFunc="onParkingClicked" />
           </div>
           </div>
           <div class="save-delete-oreders">
@@ -44,7 +44,7 @@
 </section>
 </template>
 
-<script>
+<script lang="ts">
 // @ is an alias to /src
 import Spinner from '../components/spinner.vue'
 import ParkingCard from '../components/parkingCard.vue'
@@ -53,6 +53,8 @@ import store from "../store/";
 import parkingService from '../api/parkingService'
 import commonUtils from '../utils/commonUtils'
 import swal from 'sweetalert';
+import { ParkingModel } from '../models/parkingsModel';
+import { mapMutations  } from 'vuex';
 
 export default {
   components:{Spinner, ParkingCard,Datepicker},
@@ -66,28 +68,39 @@ export default {
       }
   },
   created() {
-    store.dispatch("cleanParkingsToAdd");
+    this.cleanParkingsToAdd();
     this.getTodayParkings();
     //this.setDisabledDays();
 
   },
+  
   methods: {
+    ...mapMutations([
+      'setToParkingToShow',
+      'deleteFromParkingsToAdd',
+      'addToParkingsToAdd',
+      'cleanParkingsToAdd'
+    ]),
       async getTodayParkings() {
         this.IsSpinnerShow = true;
-        let data = await parkingService.getTodayParkings();
+        let data=  [] as Array<ParkingModel>;
+            data = await parkingService.getTodayParkings();
 
         if(data && data.length > 0) {
-          let _data =[];
+          let _data=  [] as Array<ParkingModel>;
           _data.push(data.shift());
           let tempDate = new Date(_data[0].date);   
           _data[0].date = commonUtils.setDateFormat(tempDate);
 
           this.IsSpinnerShow = false;
-          this.theData = _data;
+          commonUtils.setIsSelectedFalse(_data[0]);
+
+          this.setToParkingToShow(_data)
         }
       },
 
       async getAvailableParkings() {
+        this.cleanParkingsToAdd();
         this.IsSpinnerShow = true;
         let range = commonUtils.getRangeDates(this.startDate, this.endDate);
 
@@ -101,27 +114,41 @@ export default {
 
           if(data && data.length > 0) {
             this.IsSpinnerShow = false;
-            this.theData = data;
+            commonUtils.setIsSelectedFalse(data);
+            //this.theData = data;
+            this.setToParkingToShow(data)
           }
         }
       },
 
       saveParkings() {
            swal("Congrats! all the parkings are saved for you!", {
-                    icon: "success",
+                icon: "success",
             });
       },
 
-    onParkingClicked(data, isSelected) {
-
-          if(isSelected) {
-            let isExist = this.$store.state.parkingsToAdd.filter((obj) => {return obj.userId == data.userId && obj.date == data.date});
+    onParkingClicked(data) {
+          let isExist = this.$store.state.parkingsToAdd.filter((obj) => {return obj.userId == data.userId && obj.date == data.date});
+          let obj = this.$store.state.parkingsToShow.filter((obj) => {return obj.date === data.date});
+          if(!data.isSelected) {
             if(isExist && isExist.length > 0) {
-              store.dispatch("deleteFromParkingsToAdd", isExist.shift());
+              obj[0].parkings.forEach( obj => { 
+                if(obj.isSelected) {
+                   obj.isSelected = false; 
+                }
+              });
+
+              this.deleteFromParkingsToAdd(isExist.shift())
             }
-              store.dispatch("addToParkingsToAdd", data);
+              data.isSelected = true;
+              this.addToParkingsToAdd(data)
           } else {
-            store.dispatch("deleteFromParkingsToAdd", data);
+              obj[0].parkings.forEach( obj => { 
+                if(obj.parkingId === isExist[0].parkingId) {
+                   obj.isSelected = false; 
+                }
+              });
+            this.deleteFromParkingsToAdd(data)
           }
       },
 

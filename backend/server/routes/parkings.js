@@ -97,51 +97,48 @@ router.post('/todayParkings', async (req, res) => {
                 date: new Date(),
                 parkings:[
                     {
-                        date:"24.05.16",
+                        date:"24.05.2021",
                         parkingId:162,
-                        userId: 1,
                         floor:"",
                         isAvalable:true
                     },
                     {
-                        date:"24.05.16",
+                        date:"24.05.2021",
                         parkingId:153,
-                        userId: 2,
                         floor:"3",
                         isAvalable:true
                     },
                     {
-                        date:"24.05.16",
+                        date:"24.05.2021",
                         parkingId:56,
                         userId: 3,
                         floor:"3",
                         isAvalable:false
                     },
                     {
-                        date:"24.05.16",
+                        date:"24.05.2021",
                         parkingId:79,
                         userId: 4,
                         floor:"3",
                         isAvalable:false
                     },
                     {
-                        date:"24.05.16",
+                        date:"24.05.2021",
                         parkingId:69,
                         userId: 5,
                         floor:"3",
                         isAvalable:false
                     },
                     {
-                        date:"24.05.16",
+                        date:"24.05.2021",
                         parkingId:82,
                         userId: 6,
                         floor:"3",
                         isAvalable:false
                     },
                     {
-                        date:"24.05.16",
+                        date:"24.05.2021",
                         parkingId:182,
-                        userId: 7,
                         floor:"3",
                         isAvalable:true
                     }
@@ -154,54 +151,23 @@ router.post('/availableParkings', async (req, res) => {
     res.send(
         [
             {
-                date: '22.05.2021',
+                date: '25.05.2021',
                 parkings:[
                     {
-                        date:"24.05.16",
-                        parkingId:162,
-                        userId: 1,
-                        floor:"3",
-                        isAvalable:true
-                    },
-                    {
-                        date:"24.05.16",
-                        parkingId:153,
-                        userId: 2,
-                        floor:"3",
-                        isAvalable:true
-                    },
-                    {
-                        date:"24.05.16",
-                        parkingId:56,
-                        userId: 3,
-                        floor:"3",
-                        isAvalable:false
-                    },
-                    {
-                        date:"24.05.16",
-                        parkingId:79,
-                        userId: 4,
-                        floor:"3",
-                        isAvalable:false
-                    },
-                    {
-                        date:"24.05.16",
+                        date:"25.05.2021",
                         parkingId:69,
-                        userId: 5,
                         floor:"3",
-                        isAvalable:false
+                        isAvalable:true
                     },
                     {
-                        date:"24.05.16",
+                        date:"25.05.2021",
                         parkingId:82,
-                        userId: 6,
                         floor:"3",
-                        isAvalable:false
+                        isAvalable:true
                     },
                     {
-                        date:"24.05.16",
+                        date:"25.05.2021",
                         parkingId:182,
-                        userId: 7,
                         floor:"3",
                         isAvalable:true
                     }
@@ -209,112 +175,70 @@ router.post('/availableParkings', async (req, res) => {
             
             },
             {
-                date: '23.05.2021',
+                date: '26.05.2021',
                 parkings:[
                     {
-                        date:"24.05.16",
+                        date:"26.05.2021",
                         parkingId:162,
-                        userId: 1,
                         floor:"3",
                         isAvalable:true
                     },
                     {
-                        date:"24.05.16",
+                        date:"26.05.2021",
                         parkingId:153,
-                        userId: 2,
                         floor:"3",
                         isAvalable:true
                     },
                     {
-                        date:"24.05.16",
+                        date:"26.05.2021",
                         parkingId:56,
-                        userId: 3,
                         floor:"3",
                         isAvalable:true
                     },
                     {
-                        date:"24.05.16",
-                        parkingId:79,
-                        userId: 4,
-                        floor:"3",
-                        isAvalable:true
-                    },
-                    {
-                        date:"24.05.16",
+                        date:"26.05.2021",
                         parkingId:69,
-                        userId: 5,
-                        floor:"3",
-                        isAvalable:false
-                    },
-                    {
-                        date:"24.05.16",
-                        parkingId:82,
-                        userId: 6,
                         floor:"3",
                         isAvalable:true
                     },
                     {
-                        date:"24.05.16",
-                        parkingId:182,
-                        userId: 7,
+                        date:"26.05.2021",
+                        parkingId:82,
                         floor:"3",
-                        isAvalable:false
+                        isAvalable:true
                     }
                 ]
             
             },
             {
-                date: '24.05.2021',
+                date: '27.05.2021',
                 parkings:[
+
                     {
-                        date:"24.05.16",
-                        parkingId:162,
-                        userId: 1,
-                        floor:"3",
-                        isAvalable:true
-                    },
-                    {
-                        date:"24.05.16",
+                        date:"27.05.2021",
                         parkingId:153,
-                        userId: 2,
                         floor:"3",
                         isAvalable:true
                     },
                     {
-                        date:"24.05.16",
+                        date:"27.05.2021",
                         parkingId:56,
-                        userId: 3,
                         floor:"3",
                         isAvalable:true
                     },
                     {
-                        date:"24.05.16",
+                        date:"27.05.2021",
                         parkingId:79,
-                        userId: 4,
                         floor:"3",
                         isAvalable:true
                     },
                     {
-                        date:"24.05.16",
+                        date:"27.05.2021",
                         parkingId:69,
-                        userId: 5,
                         floor:"3",
                         isAvalable:true
                     },
-                    {
-                        date:"24.05.16",
-                        parkingId:82,
-                        userId: 6,
-                        floor:"3",
-                        isAvalable:true
-                    },
-                    {
-                        date:"24.05.16",
-                        parkingId:182,
-                        userId: 7,
-                        floor:"3",
-                        isAvalable:true
-                    }
+
                 ]
             
             }

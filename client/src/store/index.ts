@@ -1,3 +1,4 @@
+import { ParkingModel } from '@/models/parkingsModel';
 import {createStore} from 'vuex'
 
 const store = createStore({
@@ -8,8 +9,11 @@ const store = createStore({
             LastName:"",
             pic:"",
         },
-        parkingsToDelete:[{parkingId:undefined}],
-        parkingsToAdd: [{parkingId:undefined}]
+        parkingsToDelete:[] as Array<ParkingModel> ,
+        parkingsToAdd: [] as Array<ParkingModel>,
+        parkingsToShow: [] as Array<ParkingModel>,
+        parkings: [] as Array<ParkingModel>
+
     },
     getters:{},
     mutations:{
@@ -20,14 +24,15 @@ const store = createStore({
             state.parkingsToDelete.push(newVal);
             console.log(state.parkingsToDelete)
         },
-        addToParkingsToAdd(state, newVal) {
-            state.parkingsToAdd.push(newVal)
+        addToParkingsToAdd(state, newVal: ParkingModel) {
+            state.parkingsToAdd.push(newVal);
+            console.log(state.parkingsToAdd);
         },
-        deleteFromParkingsToDelete(state, newVal) {
+        deleteFromParkingsToDelete(state, newVal: ParkingModel) {
             state.parkingsToDelete.forEach((element, index) => 
             {
                 if(element && element.parkingId) {
-                    if(element.parkingId === newVal.parkingId) {
+                    if(element.parkingId === newVal.parkingId && newVal.date === element.date) {
                         state.parkingsToDelete.splice(index, 1);
                         return false;
                     }
@@ -35,11 +40,12 @@ const store = createStore({
             });
 
         },
-        deleteFromParkingsToAdd(state, newVal) {
+        deleteFromParkingsToAdd(state, newVal: ParkingModel) {
             state.parkingsToAdd.forEach((element, index) => 
             {
                 if(element && element.parkingId) {
-                    if(element.parkingId === newVal.parkingId) {
+                    if(element.parkingId === newVal.parkingId && newVal.date ===  element.date) {
+                        debugger;
                         state.parkingsToAdd.splice(index, 1);
                         return false;
                     }
@@ -51,6 +57,9 @@ const store = createStore({
         },
         cleanParkingsToDelete(state) {
             state.parkingsToDelete =[];
+        },
+        setToParkingToShow(state, newVal: ParkingModel[] ) {
+            state.parkingsToShow = newVal;
         },
     },
     actions: {
@@ -74,6 +83,9 @@ const store = createStore({
         },
         cleanParkingsToDelete({commit}, obj){
             commit('cleanParkingsToDelete')
+        },
+        setToParkingToShow({commit}, obj){
+            commit('setToParkingToShow', obj)
         },
                         
     },

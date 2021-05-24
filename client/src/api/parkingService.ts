@@ -1,3 +1,4 @@
+import { ParkingModel } from '@/models/parkingsModel';
 import axios from 'axios'
 
 const url = 'http:localhost:5000/api/parkings'
@@ -48,36 +49,24 @@ export default class parkingService{
     
     }
     //update parkings
-    static getTodayParkings() {
-      return new Promise((resolve, rej) => {
-        try{
-            axios.post('http://localhost:5000/api/parkings/todayParkings')
-              .then((res) => {
-                resolve(res.data); 
-              }, (error) => {
-                rej(error)
-              });
-        }catch(err) {
-            rej(err)
-        }
-    })
+    static async getTodayParkings(): Promise<Array<ParkingModel>> {
+      try{
+        const res = await axios.post("http://localhost:5000/api/parkings/todayParkings");
+        return res.data;
+      }catch(err) {
+        return err
+      }
     }
 
-    static getAvailableParkings(dates: Date[]) {
-      return new Promise((resolve, rej) => {
-        try{
 
-            axios.post('http://localhost:5000/api/parkings/availableParkings', {
-              dates:dates
-            })
-              .then((res) => {
-                resolve(res.data); 
-              }, (error) => {
-                rej(error)
-              });
-        }catch(err) {
-            rej(err)
-        }
-    })
+    static async getAvailableParkings(dates: Date[]): Promise<Array<ParkingModel>> {
+      try{
+        const res = await axios.post('http://localhost:5000/api/parkings/availableParkings', {
+          dates:dates
+        });
+        return res.data;
+      }catch(err) {
+        return err
+      }
     }
 }

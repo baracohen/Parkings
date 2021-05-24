@@ -6,10 +6,13 @@
       Your parking spot is:
     </p>
       <label class="parkingSpot">{{parkingSpot}}</label>
-    <div>
-      <button @click="redirect" type="button" class="btn btn-primary btn-lg ">Order parking</button>
-      <button @click="redirectMyOrders" type="button" class="btn btn-primary btn-lg ">My orders</button>
+          <div>
+      <button @click="redirectMyOrders" type="button" class="btn btn-primary btn-lg orders-btn">My orders</button>
     </div>
+    <div class="order-prakings-wrapper">
+      <button @click="redirect" type="button" class="btn btn-primary btn-lg orders-btn">Order parking</button>
+    </div>
+
   </div>
 </template>
 
@@ -67,6 +70,12 @@ a {
   border-radius: 50%;
   font-size: 75px;
   margin: 40px;
+}
+.order-prakings-wrapper {
+  margin: 20px;
+}
+.orders-btn {
+  width: 200px;
 }
 
 </style>

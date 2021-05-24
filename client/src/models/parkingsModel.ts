@@ -1,6 +1,7 @@
 export  interface ParkingModel{
-    ParkingId: number,
-    isDisabled: boolean,
-    userId: string,
-    date: Date
+    parkingId: number,
+    isSelected: boolean,
+    isAvailable: boolean,
+    userId?: string,
+    date: string
 }

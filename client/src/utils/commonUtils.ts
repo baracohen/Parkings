@@ -16,6 +16,21 @@ export default class commonUtils{
         }
         return arr;
        }
+       static setIsSelectedFalse (parkingsArr: any) {
+            
+            const newArr: any = [];
+            if(parkingsArr && parkingsArr.length > 0) {
+                parkingsArr.forEach((obj:any) => {
+                    if(obj.parkings && obj.parkings.length > 0) {
+                        obj.parkings.forEach((element:any) => {
+                            element.isSelected = false;
+                        });
+                    }
+                });
+            }   
+
+            return newArr;
+       }
 
 
 }

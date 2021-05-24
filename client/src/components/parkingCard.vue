@@ -1,9 +1,9 @@
 <template>
-  <div  v-on:click="parkingsClicked"  :class="'parkings-card-wrapper ' + ( isSelected ? ' isSelectedBorder ' : '') ">
-    <span :class="isAvalable ? 'green-dot':'red-dot'"></span>
-    <label class="number-parking">{{parkingId}}</label>
-    <div :v-if="floorNumber">
-      <span >floor {{floorNumber}}</span>
+  <div  v-on:click="parkingsClicked"  :class="'parkings-card-wrapper ' + ( prakingObj.isSelected ? ' isSelectedBorder ' : '') ">
+    <span :class="prakingObj.isAvalable ? 'green-dot':'red-dot'"></span>
+    <label class="number-parking">{{prakingObj.parkingId}}</label>
+    <div :v-if="prakingObj.floorNumber">
+      <span >floor {{prakingObj.floorNumber}}</span>
     </div>
   </div>
 </template>
@@ -12,22 +12,17 @@
 import swal from 'sweetalert';
 
   export default {
-    props:['parkingId', 'isAvalable', "toDelete", "date", "clickedFunc", "floorNumber"],
+    props:['parkingId', 'isAvalable', "toDelete", "date", "clickedFunc", "floorNumber", "prakingObj"],
     data: () => ({
       isSelected: false
     }),
 
     methods: {
       parkingsClicked () {
-        if(this.$props.isAvalable || this.$props.toDelete) {
-          let user = localStorage.getItem('user');
-          let _data = {
-            parkingId: this.$props.parkingId,
-            userId: JSON.parse(user).userId,
-            date: this.$props.date
-          }
-          this.isSelected= !this.isSelected;
-          this.$props.clickedFunc(_data, this.isSelected);
+        if(this.$props.prakingObj.isAvalable || this.$props.toDelete) {
+          let user = localStorage.getItem("user")
+          this.$props.prakingObj.userId = JSON.parse(user).userId;
+          this.$props.clickedFunc(this.$props.prakingObj);
         } else {
             swal("This Parking is not available", {
                     icon: "error",
