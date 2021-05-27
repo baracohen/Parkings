@@ -49,12 +49,14 @@
 import Spinner from '../components/spinner.vue'
 import ParkingCard from '../components/parkingCard.vue'
 import Datepicker from 'vue3-datepicker'
-import store from "../store/";
 import parkingService from '../api/parkingService'
 import commonUtils from '../utils/commonUtils'
 import swal from 'sweetalert';
 import { ParkingModel } from '../models/parkingsModel';
 import { mapMutations  } from 'vuex';
+import { useStore } from 'vuex'
+import { key } from '../store'
+
 
 export default {
   components:{Spinner, ParkingCard,Datepicker},
@@ -64,14 +66,15 @@ export default {
           theData:'',
           startDate:new Date(),
           endDate:new Date(),
-          disabledDates: {}
+          disabledDates: {},
+          store:''
       }
   },
   created() {
+    this.store = useStore(key);
     this.cleanParkingsToAdd();
     this.getTodayParkings();
     //this.setDisabledDays();
-
   },
   
   methods: {
@@ -127,12 +130,12 @@ export default {
             });
       },
 
-    onParkingClicked(data) {
-          let isExist = this.$store.state.parkingsToAdd.filter((obj) => {return obj.userId == data.userId && obj.date == data.date});
-          let obj = this.$store.state.parkingsToShow.filter((obj) => {return obj.date === data.date});
+    onParkingClicked(data: any) {
+          let isExist = this.store.state.parkingsToAdd.filter((obj: any) => {return obj.userId == data.userId && obj.date == data.date});
+          let obj = this.store.state.parkingsToShow.filter((obj: any) => {return obj.date === data.date});
           if(!data.isSelected) {
             if(isExist && isExist.length > 0) {
-              obj[0].parkings.forEach( obj => { 
+              obj[0].parkings.forEach( (obj: ParkingModel) => { 
                 if(obj.isSelected) {
                    obj.isSelected = false; 
                 }
@@ -143,7 +146,7 @@ export default {
               data.isSelected = true;
               this.addToParkingsToAdd(data)
           } else {
-              obj[0].parkings.forEach( obj => { 
+              obj[0].parkings.forEach( (obj: ParkingModel) => { 
                 if(obj.parkingId === isExist[0].parkingId) {
                    obj.isSelected = false; 
                 }
@@ -152,14 +155,14 @@ export default {
           }
       },
 
-    setDisabledDays() {
-      let _newDate = this.picked.getDate() + 7;
-      this.disabledDates = {
-        from: this.picked,
-        to: _newDate,
-        daysOfMonth: "05"
-      };
-    },
+    // setDisabledDays() {
+    //   let _newDate = this.picked.getDate() + 7;
+    //   this.disabledDates = {
+    //     from: this.picked,
+    //     to: _newDate,
+    //     daysOfMonth: "05"
+    //   };
+    // },
   },
 }
 </script>

@@ -1,14 +1,21 @@
 import { ParkingModel } from '@/models/parkingsModel';
-import {createStore} from 'vuex'
+import UserModel from '@/models/userModel';
+import { InjectionKey } from 'vue'
+import { createStore, Store } from 'vuex'
 
-const store = createStore({
+
+export interface State {
+    user: UserModel,
+    parkingsToDelete: Array<ParkingModel> ,
+    parkingsToAdd: Array<ParkingModel>,
+    parkingsToShow: Array<ParkingModel>,
+    parkings: Array<ParkingModel>
+
+}
+  export const key: InjectionKey<Store<State>> = Symbol()
+export const store = createStore({
     state: {
-        user: {
-            userId:null,
-            FirstName:"",
-            LastName:"",
-            pic:"",
-        },
+        user: {} as UserModel,
         parkingsToDelete:[] as Array<ParkingModel> ,
         parkingsToAdd: [] as Array<ParkingModel>,
         parkingsToShow: [] as Array<ParkingModel>,
@@ -91,5 +98,3 @@ const store = createStore({
     },
     modules: {}
 })
-
-export default store
