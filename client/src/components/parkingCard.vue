@@ -8,11 +8,12 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue'
 import swal from 'sweetalert';
 
-  export default {
-    props:['parkingId', 'isAvalable', "toDelete", "date", "clickedFunc", "floorNumber", "prakingObj"],
+  export default defineComponent({
+    props:["toDelete", "clickedFunc", "prakingObj"],
     data: () => ({
       isSelected: false
     }),
@@ -20,8 +21,9 @@ import swal from 'sweetalert';
     methods: {
       parkingsClicked () {
         if(this.$props.prakingObj.isAvalable || this.$props.toDelete) {
-          let user = localStorage.getItem("user")
-          this.$props.prakingObj.userId = JSON.parse(user).userId;
+          let user = localStorage.getItem("user");
+          this.$props.prakingObj.userId = JSON.parse(user as string).userId ;
+          debugger
           this.$props.clickedFunc(this.$props.prakingObj);
         } else {
             swal("This Parking is not available", {
@@ -31,7 +33,7 @@ import swal from 'sweetalert';
       },
     },
     
-  }
+  })
 </script>
 
 <style lang="scss" scoped>

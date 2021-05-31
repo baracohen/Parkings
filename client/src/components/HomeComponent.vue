@@ -21,8 +21,7 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'HomeComponent',
-  props: {
-  },
+  props: { },
   data(){
       return {
           parkingSpot: "1" 
@@ -31,7 +30,6 @@ export default defineComponent({
 
   methods:{
     getParkingSpot() {
-
 
     },
 

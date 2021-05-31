@@ -52,26 +52,24 @@ import Datepicker from 'vue3-datepicker'
 import parkingService from '../api/parkingService'
 import commonUtils from '../utils/commonUtils'
 import swal from 'sweetalert';
-import { ParkingModel } from '../models/parkingsModel';
-import { mapMutations  } from 'vuex';
-import { useStore } from 'vuex'
-import { key } from '../store'
+import { mapMutations } from 'vuex';
+import { defineComponent } from 'vue'
+import { ParkingModel, ParkingsObj } from '../models/parkingsModel'
 
 
-export default {
+
+export default defineComponent({
   components:{Spinner, ParkingCard,Datepicker},
   data(){
       return {
-          IsSpinnerShow: false,
-          theData:'',
-          startDate:new Date(),
-          endDate:new Date(),
+          IsSpinnerShow: false as boolean,
+          startDate: new Date() as Date,
+          endDate: new Date() as Date,
           disabledDates: {},
-          store:''
+          
       }
   },
   created() {
-    this.store = useStore(key);
     this.cleanParkingsToAdd();
     this.getTodayParkings();
     //this.setDisabledDays();
@@ -84,21 +82,25 @@ export default {
       'addToParkingsToAdd',
       'cleanParkingsToAdd'
     ]),
+    
       async getTodayParkings() {
         this.IsSpinnerShow = true;
-        let data=  [] as Array<ParkingModel>;
+        let data= [] as ParkingsObj[];
             data = await parkingService.getTodayParkings();
 
         if(data && data.length > 0) {
-          let _data=  [] as Array<ParkingModel>;
+          let _data=  [] ;
           _data.push(data.shift());
-          let tempDate = new Date(_data[0].date);   
-          _data[0].date = commonUtils.setDateFormat(tempDate);
 
-          this.IsSpinnerShow = false;
-          commonUtils.setIsSelectedFalse(_data[0]);
+          if(_data && _data.length > 0 && _data[0] && _data[0].date ){
+            let tempDate = new Date(_data[0].date );   
+            _data[0].date = commonUtils.setDateFormat(tempDate);
 
-          this.setToParkingToShow(_data)
+            this.IsSpinnerShow = false;
+            commonUtils.setIsSelectedFalse(_data[0]);
+
+            this.setToParkingToShow(_data)
+          }
         }
       },
 
@@ -108,7 +110,7 @@ export default {
         let range = commonUtils.getRangeDates(this.startDate, this.endDate);
 
         if(range && range.length > 0) {
-          let newDateFormats = [];
+          let newDateFormats = [] as any;
           range.forEach((obj) => {
             newDateFormats.push(commonUtils.setDateFormat(obj));
           });
@@ -118,7 +120,6 @@ export default {
           if(data && data.length > 0) {
             this.IsSpinnerShow = false;
             commonUtils.setIsSelectedFalse(data);
-            //this.theData = data;
             this.setToParkingToShow(data)
           }
         }
@@ -130,17 +131,17 @@ export default {
             });
       },
 
-    onParkingClicked(data: any) {
-          let isExist = this.store.state.parkingsToAdd.filter((obj: any) => {return obj.userId == data.userId && obj.date == data.date});
-          let obj = this.store.state.parkingsToShow.filter((obj: any) => {return obj.date === data.date});
+    onParkingClicked(data: ParkingModel) {
+
+          let isExist = this.$store.state.parkingsToAdd.filter((obj: ParkingModel) => {return obj.userId == data.userId && obj.date == data.date});
+          let obj = this.$store.state.parkingsToShow.filter((obj: ParkingsObj) => {return obj.date === data.date});
           if(!data.isSelected) {
-            if(isExist && isExist.length > 0) {
+            if(isExist && isExist.length > 0 && obj && obj.length > 0) {
               obj[0].parkings.forEach( (obj: ParkingModel) => { 
                 if(obj.isSelected) {
                    obj.isSelected = false; 
                 }
               });
-
               this.deleteFromParkingsToAdd(isExist.shift())
             }
               data.isSelected = true;
@@ -164,7 +165,7 @@ export default {
     //   };
     // },
   },
-}
+})
 </script>
 <style lang="scss">
     .parkings {

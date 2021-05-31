@@ -14,14 +14,14 @@
             </div>
             <h6> This is your Bookings</h6>
           </div>
-          <div class="parking-view-wrapper" v-for="(obj, index) in theData" v-bind:key="index">
+          <div class="parking-view-wrapper" v-for="(obj, index) in $store.state.parkingsToShow" v-bind:key="index">
             <div class="date-label-div">
               <label class="date-label">for {{obj.date}}</label>
             </div>
             <div class="grid">
-              <ParkingCard v-bind:key="index" :prakingObj="obj" :floorNumber="obj.floor" :clickedFunc="onParkingClicked" :parkingId="obj.parkingId" :isAvalable="false" :toDelete="true" :date="obj.date"/>
+              <ParkingCard v-for="(obj, index) in obj.parkings" :prakingObj="obj" v-bind:key="index" :clickedFunc="onParkingClicked" :toDelete="true" />
             </div>
-            </div>
+          </div>
           <div class="spinner" v-if="IsSpinnerShow">
             <Spinner />
           </div>
@@ -34,15 +34,18 @@
 </section>
 </template>
 
-<script>
+<script lang="ts">
 // @ is an alias to /src
 import Spinner from '../components/spinner.vue'
 import ParkingCard from '../components/parkingCard.vue'
 import swal from 'sweetalert';
 import parkingService from '../api/parkingService'
-import store from "../store/";
+import { ParkingModel, ParkingsObj } from '../models/parkingsModel';
+import { mapMutations } from 'vuex';
+import commonUtils from '../utils/commonUtils';
+import { defineComponent } from 'vue'
 
-export default {
+export default defineComponent({
   components:{Spinner, ParkingCard},
   data(){
       return {
@@ -50,22 +53,32 @@ export default {
           deleteMsg:'Are you sure you want to delete this bookings?',
           deleteTitle:'Are you sure',
           deleteIcon:'warning',
+          IsSpinnerShow: false
+
       }
   },
   created() {
+    this.cleanParkingsToDelete();
     this.getUserParkings();
-    store.dispatch("cleanParkingsToDelete");
-
   },
   methods: {
+    ...mapMutations([
+      'setToParkingToShow',
+      'deleteFromParkingsToDelete',
+      'addToParkingsToDelete',
+      'cleanParkingsToDelete'
+    ]),
       async getUserParkings() {
 
-        let data = await parkingService.getUserParkings();
-
-        if(data && data.length > 0) {
-          this.theData = data;
-        }
+        let data = await parkingService.getUserParkings() as ParkingsObj[];
+      debugger
+       if(data && data.length > 0) {
+            this.IsSpinnerShow = false;
+            commonUtils.setIsSelectedFalse(data);
+            this.setToParkingToShow(data)
+          }
       },
+
        deleteItems() {
 
       },
@@ -75,7 +88,7 @@ export default {
           title: this.deleteTitle,
           text: this.deleteMsg,
           icon: "warning",
-          buttons: true,
+          buttons: ["Cancel", "Ok"],
           dangerMode: true,
             })
             .then((willDelete) => {
@@ -89,15 +102,19 @@ export default {
             });
 
       },
-      onParkingClicked(data, isSelected) {
-          if(isSelected) {
-            store.dispatch("addToParkingsToDelete", data);
+      onParkingClicked(data: ParkingModel) {
+
+          if(!data.isSelected) {
+          this.addToParkingsToDelete(data);
+
           } else {
-            store.dispatch("deleteFromParkingsToDelete", data);
+            this.deleteFromParkingsToDelete(data)
           }
+            data.isSelected = !data.isSelected;
+
       }
 }
-}
+})
 </script>
 <style lang="scss">
     .avatarImg {

@@ -1,19 +1,28 @@
-import { ParkingModel } from '@/models/parkingsModel';
+import { ParkingModel, ParkingsObj } from '@/models/parkingsModel';
 import UserModel from '@/models/userModel';
-import { InjectionKey } from 'vue'
 import { createStore, Store } from 'vuex'
+
+
 
 
 export interface State {
     user: UserModel,
     parkingsToDelete: Array<ParkingModel> ,
     parkingsToAdd: Array<ParkingModel>,
-    parkingsToShow: Array<ParkingModel>,
+    parkingsToShow: Array<ParkingsObj>,
     parkings: Array<ParkingModel>
 
 }
-  export const key: InjectionKey<Store<State>> = Symbol()
-export const store = createStore({
+
+declare module "@vue/runtime-core" {
+ // declare your own store states
+ interface ComponentCustomProperties {
+ $store: Store<State>;
+ }
+}
+
+
+const store = createStore({
     state: {
         user: {} as UserModel,
         parkingsToDelete:[] as Array<ParkingModel> ,
@@ -98,3 +107,4 @@ export const store = createStore({
     },
     modules: {}
 })
+export default store

@@ -38,33 +38,39 @@
 </section>
 </template>
 
-<script>
+<script lang="ts">
 // @ is an alias to /src
 import Spinner from '../components/spinner.vue'
-import store from "../store";
 import parkingService from '../api/parkingService'
+import { mapMutations } from 'vuex';
+import { defineComponent } from 'vue'
 
-export default {
+export default defineComponent({
    components:{Spinner},
   data(){
-
       return {
+        email:'' as string,
+        password:''as string,
+        IsSpinnerShow: false as boolean
       }
   },
     watch: {
         user(user) {
-        localStorage.user = user;
+            localStorage.user = user;
         }
   },
   methods: {
-     async login(event) {
+    ...mapMutations([
+      'saveUser',
+    ]),
+     async login(event: any) {
         event.preventDefault();
         this.IsSpinnerShow = true
 
         let _user = await parkingService.login(this.email, this.password);
-        if(_user && _user.data !=  undefined) {
-            localStorage.setItem('user', JSON.stringify(_user.data));
-            store.dispatch("saveUser", _user.data);
+        if(_user) {
+            localStorage.setItem('user', JSON.stringify(_user));
+            this.saveUser(_user)
             this.redirect();
         }
 
@@ -77,7 +83,7 @@ export default {
       }
   }
 
-}
+})
 </script>
 
 <style lang="scss" scoped>

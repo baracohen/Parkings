@@ -5,3 +5,8 @@ export  interface ParkingModel{
     userId?: string,
     date: string
 }
+
+export  interface ParkingsObj{
+    date: any,
+    parkings: ParkingModel[]
+}
