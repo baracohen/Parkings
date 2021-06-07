@@ -10,7 +10,6 @@ export default defineComponent({
   
 created() {
     const _user = localStorage.getItem('user');
-    debugger;
     if(_user ) {
       console.log(_user);
     } else {
