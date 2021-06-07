@@ -3,6 +3,24 @@
     <router-view />
   </div>
 </template>
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  
+created() {
+    const _user = localStorage.getItem('user');
+    debugger;
+    if(_user ) {
+      console.log(_user);
+    } else {
+        this.$router.push({ path: '/Login' })
+    }
+
+  },
+})
+</script>
+
 
 <style>
 #app {
