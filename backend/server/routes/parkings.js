@@ -17,11 +17,12 @@ router.post('/login', async (req, res) => {
     console.log(req.body);
     if(req.body.email && req.body.pass) {
         res.send(
-            user={
+            user = {
                 userId:1,
                 FirstName: "Barak",
                 LastName: "Cohen",
-                pic: "https://api.duniagames.co.id/api/content/upload/file/8143860661599124172.jpg"
+                pic: "https://api.duniagames.co.id/api/content/upload/file/8143860661599124172.jpg",
+                perm:"Admin"
             }
         );
     } else {
