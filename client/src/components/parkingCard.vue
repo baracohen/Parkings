@@ -23,7 +23,6 @@ import swal from 'sweetalert';
         if(this.$props.prakingObj.isAvalable || this.$props.toDelete) {
           let user = localStorage.getItem("user");
           this.$props.prakingObj.userId = JSON.parse(user as string).userId ;
-          debugger
           this.$props.clickedFunc(this.$props.prakingObj);
         } else {
             swal("This Parking is not available", {

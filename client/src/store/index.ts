@@ -61,7 +61,6 @@ const store = createStore({
             {
                 if(element && element.parkingId) {
                     if(element.parkingId === newVal.parkingId && newVal.date ===  element.date) {
-                        debugger;
                         state.parkingsToAdd.splice(index, 1);
                         return false;
                     }
