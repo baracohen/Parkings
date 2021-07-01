@@ -1,5 +1,5 @@
 const express = require('express');
-const parkingModel = require('../models/parkingModel');
+const connectionModel = require('../models/parkingModel');
 
 const router = express.Router();
 
@@ -34,7 +34,7 @@ router.post('/todayUserParking', async (req, res) => {
     if(req.body.userId && req.body.date) {
         const query = { "userId": req.body.userId, "date": req.body.date };
 
-        parkingModel.find(query).exec((err, data) => {
+        connectionModel.find(query).exec((err, data) => {
             console.log(data);
 
             if(err) {
@@ -50,7 +50,38 @@ router.post('/todayUserParking', async (req, res) => {
     } else {
         return false;
     }
+});
+router.post('/saveParkings', async (req, res) => {
+    if(req.body.parkings && req.body.parkings.length > 0 ) {
+        const _parkings = req.body.parkings;
+        var sendExist = false;
+        
+        for (const parking of _parkings) {
+            const query = { "parkingId": parking.parkingId, "date": parking.date };
+            const _isExist = await connectionModel.find(query);
+ 
+            if(_isExist && _isExist.length > 0 ) {
+                 sendExist = true;
+                 break;
+            };
+          }
+        if(!sendExist) {
+            try{
+                const options = { ordered: true };
+                const result = await connectionModel.insertMany(_parkings, options);
+                res.send(result);
 
+            }catch(err){
+                res.send(err);
+            }
+
+        } else {
+            res.send(false);
+
+        }
+    } else {
+        return false;
+    }
 });
 
 router.post('/userParkings', async (req, res) => {

@@ -1,10 +1,9 @@
-import { ParkingModel, ParkingsObj } from '@/models/parkingsModel';
+import { ParkingModel, ParkingsObj, ParkingSpotModel } from '@/models/parkingsModel';
 import UserModel from '@/models/userModel';
 import axios from 'axios'
 
 const url = 'http:localhost:5000/api/parkings'
 export default class parkingService{
-
 
     static async login(email:string, pass:string): Promise<UserModel> {
       try{
@@ -30,6 +29,18 @@ export default class parkingService{
         }catch(err) {
           return err
         }
+      }
+    }
+
+    static async saveParkings(parkings: Array<ParkingSpotModel>):Promise<boolean> {
+      try{
+        const res = await axios.post("http://localhost:5000/api/parkings/saveParkings",{
+          parkings: parkings,
+        });
+        debugger;
+        return res.data;
+      }catch(err) {
+        return err
       }
     }
     

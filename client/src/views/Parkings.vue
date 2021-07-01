@@ -54,7 +54,7 @@ import commonUtils from '../utils/commonUtils'
 import swal from 'sweetalert';
 import { mapMutations } from 'vuex';
 import { defineComponent } from 'vue'
-import { ParkingModel, ParkingsObj } from '../models/parkingsModel'
+import { ParkingModel, ParkingsObj, ParkingSpotModel } from '../models/parkingsModel'
 
 
 
@@ -125,10 +125,30 @@ export default defineComponent({
         }
       },
 
-      saveParkings() {
+      async saveParkings() {
+        let newArr = [] as Array<ParkingSpotModel>;
+
+        this.$store.state.parkingsToAdd.forEach(element => {
+          let obj= {} as ParkingSpotModel
+
+          obj.parkingId = element.parkingId,
+          obj.date = element.date,
+          obj.floor = element.floor,
+          obj.userId = this.$store.state.user.userId
+          newArr.push(obj);
+        });
+          let data = await parkingService.saveParkings(newArr)
+          if(data) {
+
            swal("Congrats! all the parkings are saved for you!", {
                 icon: "success",
             });
+          } else {
+              swal("Someone has ordered some of the parkings, please refresh the page and try again", {
+                icon: "error",
+            });
+          }
+
       },
 
     onParkingClicked(data: ParkingModel) {
@@ -166,6 +186,7 @@ export default defineComponent({
     // },
   },
 })
+
 </script>
 <style lang="scss">
     .parkings {

@@ -3,6 +3,7 @@ export  interface ParkingModel{
     isSelected: boolean,
     isAvailable: boolean,
     userId?: string,
+    floor: number,
     date: string
 }
 
@@ -13,7 +14,7 @@ export  interface ParkingsObj{
 
 export interface ParkingSpotModel{
     parkingId: number,
-    userId: number,
-    floor: boolean,
+    userId: string,
+    floor: number,
     date: string
 }
