@@ -1,6 +1,6 @@
 const express = require('express');
 const connectionModel = require('../models/parkingModel');
-
+const cache = require('../cache/cache')
 const router = express.Router();
 
 // get parkings
@@ -51,6 +51,7 @@ router.post('/todayUserParking', async (req, res) => {
         return false;
     }
 });
+
 router.post('/saveParkings', async (req, res) => {
     if(req.body.parkings && req.body.parkings.length > 0 ) {
         const _parkings = req.body.parkings;
@@ -87,6 +88,7 @@ router.post('/saveParkings', async (req, res) => {
 router.post('/userParkings', async (req, res) => {
     console.log(req.body.userId)
     if(req.body.userId) {
+        connection
         res.send([
 
             {
@@ -170,6 +172,21 @@ router.post('/userParkings', async (req, res) => {
     }
 });
 router.post('/todayParkings', async (req, res) => {
+    const parkings =  await cache();
+    const query = { "date": req.body.date };
+    
+    connectionModel.find(query).exec((err, data) => {
+        if(err) {
+            res.send(err);
+        } else {
+            if(data && data.length > 0) {
+                
+                res.send()
+
+            }
+        }
+    
+    })
         res.send(
             [{
                 date: new Date(),

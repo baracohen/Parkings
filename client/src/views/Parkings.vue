@@ -86,7 +86,8 @@ export default defineComponent({
       async getTodayParkings() {
         this.IsSpinnerShow = true;
         let data= [] as ParkingsObj[];
-            data = await parkingService.getTodayParkings();
+        let date = commonUtils.setDateFormat(new Date());
+            data = await parkingService.getTodayParkings(date);
 
         if(data && data.length > 0) {
           let _data=  [] ;

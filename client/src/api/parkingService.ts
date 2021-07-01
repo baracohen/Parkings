@@ -37,7 +37,6 @@ export default class parkingService{
         const res = await axios.post("http://localhost:5000/api/parkings/saveParkings",{
           parkings: parkings,
         });
-        debugger;
         return res.data;
       }catch(err) {
         return err
@@ -61,9 +60,11 @@ export default class parkingService{
       }
     }
 
-    static async getTodayParkings(): Promise<Array<ParkingsObj>> {
+    static async getTodayParkings(date: string ): Promise<Array<ParkingsObj>> {
       try{
-        const res = await axios.post("http://localhost:5000/api/parkings/todayParkings");
+        const res = await axios.post("http://localhost:5000/api/parkings/todayParkings", {
+          date:date
+        });
         return res.data;
       }catch(err) {
         return err
