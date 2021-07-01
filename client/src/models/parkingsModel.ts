@@ -10,3 +10,10 @@ export  interface ParkingsObj{
     date: any,
     parkings: ParkingModel[]
 }
+
+export interface ParkingSpotModel{
+    parkingId: number,
+    userId: number,
+    floor: boolean,
+    date: string
+}

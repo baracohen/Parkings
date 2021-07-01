@@ -2,11 +2,17 @@
   <div class="container">
     <h1>Hey {{ $store.state.user.FirstName }} {{ $store.state.user.LastName }}</h1>
     <h5>Welcome back</h5>
-    <p>
-      Your parking spot is:
-    </p>
-      <label class="parkingSpot">{{parkingSpot}}</label>
-          <div>
+    <div class="spinner" v-if="$store.state.parkingSpot.parkingId">
+      <Spinner />
+      <p>
+        Your parking spot is:
+      </p>
+        <label class="parkingSpot">{{$store.state.parkingSpot.parkingId}}</label>
+    </div>
+      <div v-else>
+        <label>It seenms that you dont have parking for today, go get one now </label>
+      </div>
+      <div>
       <button @click="redirectMyOrders" type="button" class="btn btn-primary btn-lg orders-btn">My orders</button>
     </div>
     <div class="order-prakings-wrapper">
@@ -18,19 +24,31 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { mapMutations } from 'vuex';
+import parkingService from '../api/parkingService'
+import commonUtils from '../utils/commonUtils'
 
 export default defineComponent({
   name: 'HomeComponent',
   props: { },
-  data(){
-      return {
-          parkingSpot: "1" 
-      }
+
+  created(){
+    this.getParkingSpot()
   },
 
   methods:{
-    getParkingSpot() {
+    ...mapMutations([
+      'setParkingSpot',
+    ]),
 
+    async getParkingSpot() {
+        let data: any;
+        let _date = commonUtils.setDateFormat(new Date())
+            data = await parkingService.getTodayUserParking(this.$store.state.user.userId, _date);
+
+        if(data != false && data.length > 0 ) {
+            this.setParkingSpot(data.shift())
+        }
     },
 
     redirect() {

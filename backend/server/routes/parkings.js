@@ -1,5 +1,5 @@
 const express = require('express');
-const mongodb = require('mongodb');
+const parkingModel = require('../models/parkingModel');
 
 const router = express.Router();
 
@@ -30,18 +30,27 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.post('/todayUserParkings', async (req, res) => {
-    if(req.body.email && req.body.pass) {
-        res.send(
-            parking={
-                parkingId:79,
-                userId:1,
-                date:"24.5.06"
+router.post('/todayUserParking', async (req, res) => {
+    if(req.body.userId && req.body.date) {
+        const query = { "userId": req.body.userId, "date": req.body.date };
+
+        parkingModel.find(query).exec((err, data) => {
+            console.log(data);
+
+            if(err) {
+                res.json(err)
+            }else {
+                if(data && data.length > 0) {
+                    res.send(data)
+                }else {
+                    return false;
+                }
             }
-        );
+        })
     } else {
         return false;
     }
+
 });
 
 router.post('/userParkings', async (req, res) => {

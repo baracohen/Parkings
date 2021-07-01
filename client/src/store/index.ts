@@ -1,4 +1,4 @@
-import { ParkingModel, ParkingsObj } from '@/models/parkingsModel';
+import { ParkingModel, ParkingsObj, ParkingSpotModel } from '@/models/parkingsModel';
 import UserModel from '@/models/userModel';
 import { createStore, Store } from 'vuex'
 
@@ -7,6 +7,7 @@ import { createStore, Store } from 'vuex'
 
 export interface State {
     user: UserModel,
+    ParkingSpot: ParkingSpotModel,
     parkingsToDelete: Array<ParkingModel> ,
     parkingsToAdd: Array<ParkingModel>,
     parkingsToShow: Array<ParkingsObj>,
@@ -28,13 +29,18 @@ const store = createStore({
         parkingsToDelete:[] as Array<ParkingModel> ,
         parkingsToAdd: [] as Array<ParkingModel>,
         parkingsToShow: [] as Array<ParkingModel>,
-        parkings: [] as Array<ParkingModel>
+        parkings: [] as Array<ParkingModel>,
+        parkingSpot: {} as ParkingSpotModel,
+
 
     },
     getters:{},
     mutations:{
         saveUser(state, newVal) {
             state.user = newVal
+        },
+        setParkingSpot(state, newVal) {
+            state.parkingSpot = newVal
         },
         addToParkingsToDelete(state, newVal) {
             state.parkingsToDelete.push(newVal);
@@ -102,6 +108,10 @@ const store = createStore({
         setToParkingToShow({commit}, obj){
             commit('setToParkingToShow', obj)
         },
+        setParkingSpot({commit}, obj){
+            commit('setParkingSpot', obj)
+        },
+        
                         
     },
     modules: {}

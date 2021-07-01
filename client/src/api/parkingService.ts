@@ -17,6 +17,22 @@ export default class parkingService{
         return err
       }
     }
+
+    static async getTodayUserParking(userId: string, date: string): Promise<any> {
+      const _user = localStorage.getItem('user');
+      if(_user) {
+        try{
+          const res = await axios.post('http://localhost:5000/api/parkings/todayUserParking', {
+            userId: userId,
+            date: date
+          });
+          return res.data;
+        }catch(err) {
+          return err
+        }
+      }
+    }
+    
     
     static async getUserParkings(): Promise<Array<ParkingsObj>> {
       let userId;

@@ -5,18 +5,28 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { mapMutations } from 'vuex';
 
 export default defineComponent({
   
 created() {
-    const _user = localStorage.getItem('user');
-    if(_user ) {
-      console.log(_user);
-    } else {
-        this.$router.push({ path: '/Login' })
-    }
+  this.checkUserLogin()
 
-  },
+},
+methods: {
+  ...mapMutations([
+    'saveUser',
+  ]),
+
+  checkUserLogin() {
+    const _user = localStorage.getItem('user');
+      if(_user ) {
+        this.saveUser(JSON.parse(_user))
+      } else {
+          this.$router.push({ path: '/Login' })
+      }
+    }
+  }
 })
 </script>
 
