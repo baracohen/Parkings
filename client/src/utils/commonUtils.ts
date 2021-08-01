@@ -6,16 +6,32 @@ export default class commonUtils{
         + date.getFullYear();
     }
 
-    static getRangeDates (startDate:Date, endDate:Date) {
+    static saveDateFormat(date: string) {
+
+        const arrayOfWeekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+        const dateObj = new Date(date)
+        const weekdayNumber = dateObj.getDay();
+        const weekdayName = arrayOfWeekdays[weekdayNumber];
+
+        const _date = new Date(date);
+        const name = weekdayName + ' ' + _date.getDay() + '.' + _date.getMonth() + '.' + _date.getFullYear() ; 
+        return name;
+    }
+
+
+
+    static getRangeDates (startDate:string, endDate:string) {
 
         const arr = new Array();
         const dt = new Date(startDate);
-        while (dt <= endDate) {
+        const _endDate = new Date(endDate)
+        while (dt <= _endDate) {
             arr.push(new Date(dt));
             dt.setDate(dt.getDate() + 1);
         }
         return arr;
        }
+       
        static setIsSelectedFalse (parkingsArr: any) {
             
             const newArr: any = [];

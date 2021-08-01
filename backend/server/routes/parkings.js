@@ -1,6 +1,7 @@
 const express = require('express');
 const connectionModel = require('../models/parkingModel');
-const cache = require('../cache/cache')
+const cache = require('../cache/cache');
+const helpers = require('../helpers/helpers');
 const router = express.Router();
 
 // get parkings
@@ -13,8 +14,6 @@ router.get('/', (req, res) => {
 // update parkings 
 
 router.post('/login', async (req, res) => {
-    console.log("it's working !!!")
-    console.log(req.body);
     if(req.body.email && req.body.pass) {
         res.send(
             user = {
@@ -35,7 +34,6 @@ router.post('/todayUserParking', async (req, res) => {
         const query = { "userId": req.body.userId, "date": req.body.date };
 
         connectionModel.find(query).exec((err, data) => {
-            console.log(data);
 
             if(err) {
                 res.json(err)
@@ -86,11 +84,8 @@ router.post('/saveParkings', async (req, res) => {
 });
 
 router.post('/userParkings', async (req, res) => {
-    console.log(req.body.userId)
     if(req.body.userId) {
-        connection
         res.send([
-
             {
                 date:"31.05.16",
                 parkings:
@@ -171,174 +166,51 @@ router.post('/userParkings', async (req, res) => {
         return false;
     }
 });
-router.post('/todayParkings', async (req, res) => {
+router.post('/availableParkings', async (req, res) => {
     const parkings =  await cache();
-    const query = { "date": req.body.date };
+    
+    const query = { "date":{$gte: req.body.startDate, $lt: req.body.endDate }};
     
     connectionModel.find(query).exec((err, data) => {
         if(err) {
             res.send(err);
         } else {
-            if(data && data.length > 0) {
-                
-                res.send()
 
+            if(data && data.length > 0) {
+                let _parkings = [];
+
+                if(req.body.isAll) {
+                    _parkings = data;
+                } else {
+                    _parkings = helpers.SetAvailableParkings(data);
+                }
+                res.send(_parkings)
+            } else {
+                
+                res.send(parkings)
             }
         }
-    
     })
-        res.send(
-            [{
-                date: new Date(),
-                parkings:[
-                    {
-                        date:"31.05.2021",
-                        parkingId:162,
-                        floor:"",
-                        isAvalable:true
-                    },
-                    {
-                        date:"31.05.2021",
-                        parkingId:153,
-                        floor:"3",
-                        isAvalable:true
-                    },
-                    {
-                        date:"31.05.2021",
-                        parkingId:56,
-                        userId: 3,
-                        floor:"3",
-                        isAvalable:false
-                    },
-                    {
-                        date:"31.05.2021",
-                        parkingId:79,
-                        userId: 4,
-                        floor:"3",
-                        isAvalable:false
-                    },
-                    {
-                        date:"31.05.2021",
-                        parkingId:69,
-                        userId: 5,
-                        floor:"3",
-                        isAvalable:false
-                    },
-                    {
-                        date:"31.05.2021",
-                        parkingId:82,
-                        userId: 6,
-                        floor:"3",
-                        isAvalable:false
-                    },
-                    {
-                        date:"31.05.2021",
-                        parkingId:182,
-                        floor:"3",
-                        isAvalable:true
-                    }
-                ]
-                
-            }]
-        );
 });
-router.post('/availableParkings', async (req, res) => {
-    res.send(
-        [
-            {
-                date: '25.05.2021',
-                parkings:[
-                    {
-                        date:"25.05.2021",
-                        parkingId:69,
-                        floor:"3",
-                        isAvalable:true
-                    },
-                    {
-                        date:"25.05.2021",
-                        parkingId:82,
-                        floor:"3",
-                        isAvalable:true
-                    },
-                    {
-                        date:"25.05.2021",
-                        parkingId:182,
-                        floor:"3",
-                        isAvalable:true
-                    }
-                ]
-            
-            },
-            {
-                date: '26.05.2021',
-                parkings:[
-                    {
-                        date:"26.05.2021",
-                        parkingId:162,
-                        floor:"3",
-                        isAvalable:true
-                    },
-                    {
-                        date:"26.05.2021",
-                        parkingId:153,
-                        floor:"3",
-                        isAvalable:true
-                    },
-                    {
-                        date:"26.05.2021",
-                        parkingId:56,
-                        floor:"3",
-                        isAvalable:true
-                    },
-                    {
-                        date:"26.05.2021",
-                        parkingId:69,
-                        floor:"3",
-                        isAvalable:true
-                    },
-                    {
-                        date:"26.05.2021",
-                        parkingId:82,
-                        floor:"3",
-                        isAvalable:true
-                    }
-                ]
-            
-            },
-            {
-                date: '27.05.2021',
-                parkings:[
 
-                    {
-                        date:"27.05.2021",
-                        parkingId:153,
-                        floor:"3",
-                        isAvalable:true
-                    },
-                    {
-                        date:"27.05.2021",
-                        parkingId:56,
-                        floor:"3",
-                        isAvalable:true
-                    },
-                    {
-                        date:"27.05.2021",
-                        parkingId:79,
-                        floor:"3",
-                        isAvalable:true
-                    },
-                    {
-                        date:"27.05.2021",
-                        parkingId:69,
-                        floor:"3",
-                        isAvalable:true
-                    },
+router.post('/todayParkings', async (req, res) => {
+    
+    
+    let _parkings = [];
+    for (const date of req.body.dates) {
+        const query = { "date": date};
+        let parkings = await connectionModel.find(query)
 
-                ]
-            
+            if(req.body.isAll) {
+                //_parkings = data;
+                _parkings.push(await helpers.SetAllParkings(parkings, date));
+
+            } else {
+                _parkings.push(await helpers.SetAvailableParkings(parkings, date));
             }
-        ]
-    );
+      }
+      res.send(_parkings)
 });
+
 
 module.exports = router;

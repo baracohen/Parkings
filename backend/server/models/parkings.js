@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 
 const parkingsModel = new mongoose.Schema({
-    parkings: [Number],
+    parkings: [{
+        parkingId: Number,
+        floor: Number
+    }],
 });
 
 module.exports = mongoose.model('parkings', parkingsModel);

@@ -23,7 +23,7 @@
               <div class="col-md-3 "></div>
             </div>
           </div>
-          <button class="btn btn-primary w-25" @click="getAvailableParkings">Go!</button>
+          <button class="btn btn-primary w-25" @click="getAvailableParkings(false)">Go!</button>
           <div class="spinner" v-if="IsSpinnerShow">
             <Spinner />
           </div>
@@ -71,7 +71,7 @@ export default defineComponent({
   },
   created() {
     this.cleanParkingsToAdd();
-    this.getTodayParkings();
+    this.getTodayParkings(false);
     //this.setDisabledDays();
   },
   
@@ -83,11 +83,11 @@ export default defineComponent({
       'cleanParkingsToAdd'
     ]),
     
-      async getTodayParkings() {
+      async getTodayParkings(isAll: boolean) {
         this.IsSpinnerShow = true;
         let data= [] as ParkingsObj[];
-        let date = commonUtils.setDateFormat(new Date());
-            data = await parkingService.getTodayParkings(date);
+        let date = commonUtils.saveDateFormat(new Date().toString());
+            data = await parkingService.getTodayParkings([date], isAll);
 
         if(data && data.length > 0) {
           let _data=  [] ;
@@ -105,25 +105,29 @@ export default defineComponent({
         }
       },
 
-      async getAvailableParkings() {
+      async getAvailableParkings(isAll: boolean) {
+        
+
         this.cleanParkingsToAdd();
         this.IsSpinnerShow = true;
-        let range = commonUtils.getRangeDates(this.startDate, this.endDate);
 
-        if(range && range.length > 0) {
-          let newDateFormats = [] as any;
-          range.forEach((obj) => {
-            newDateFormats.push(commonUtils.setDateFormat(obj));
-          });
+        let range = commonUtils.getRangeDates(commonUtils.saveDateFormat(this.startDate.toString()), commonUtils.saveDateFormat(this.endDate.toString()));
+        debugger;
+       if(range && range.length > 0) {
+           let newDateFormats = [] as any;
+           range.forEach((obj) => {
+           newDateFormats.push(commonUtils.saveDateFormat(obj));
+        });
+        
           
-          let data = await parkingService.getAvailableParkings(newDateFormats);
+          let data = await parkingService.getAvailableParkings(newDateFormats, isAll);
 
           if(data && data.length > 0) {
             this.IsSpinnerShow = false;
             commonUtils.setIsSelectedFalse(data);
             this.setToParkingToShow(data)
           }
-        }
+       }
       },
 
       async saveParkings() {
@@ -133,7 +137,7 @@ export default defineComponent({
           let obj= {} as ParkingSpotModel
 
           obj.parkingId = element.parkingId,
-          obj.date = element.date,
+          obj.date = commonUtils.saveDateFormat(element.date),
           obj.floor = element.floor,
           obj.userId = this.$store.state.user.userId
           newArr.push(obj);

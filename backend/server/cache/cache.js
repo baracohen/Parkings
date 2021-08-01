@@ -5,10 +5,10 @@ const parkingsCacheData = new NodeCache();
 
 
 const getParkings = async () => {
-    const _parkingsId = parkingsCacheData.get("parkings");
+    const _parkings = parkingsCacheData.get("parkings");
 
-    if(_parkingsId && _parkingsId.length > 0 ) {
-        return _parkingsId
+    if(_parkings && _parkings.length > 0 ) {
+        return _parkings
     } else {
         await parkingsModel.find().then((data) => {
             if(data && data[0]) {

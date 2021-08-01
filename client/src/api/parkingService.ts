@@ -60,10 +60,11 @@ export default class parkingService{
       }
     }
 
-    static async getTodayParkings(date: string ): Promise<Array<ParkingsObj>> {
+    static async getTodayParkings(dates: string[], isAll: boolean ): Promise<Array<ParkingsObj>> {
       try{
         const res = await axios.post("http://localhost:5000/api/parkings/todayParkings", {
-          date:date
+          dates:dates,
+          isAll:isAll
         });
         return res.data;
       }catch(err) {
@@ -72,11 +73,13 @@ export default class parkingService{
     }
 
 
-    static async getAvailableParkings(dates: Date[]): Promise<Array<ParkingsObj>> {
+    static async getAvailableParkings(dates: string[], isAll: boolean): Promise<Array<ParkingsObj>> {
       try{
-        const res = await axios.post('http://localhost:5000/api/parkings/availableParkings', {
-          dates:dates
+        const res = await axios.post('http://localhost:5000/api/parkings/todayParkings', {
+          dates:dates,
+          isAll: isAll
         });
+        debugger;
         return res.data;
       }catch(err) {
         return err
