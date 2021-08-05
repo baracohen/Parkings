@@ -193,7 +193,7 @@ router.post('/availableParkings', async (req, res) => {
     })
 });
 
-router.post('/todayParkings', async (req, res) => {
+router.post('/availableParkings', async (req, res) => {
     
     
     let _parkings = [];

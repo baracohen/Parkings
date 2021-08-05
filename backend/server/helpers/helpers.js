@@ -2,17 +2,13 @@ const cache = require('../cache/cache')
 
 
 
-    setAvailableParkings = async (arr, date) => {
+    setAvailableParkings = async (arr, date, isAll) => {
 
-        const _parkings = await filterAndSetAvailableParkings(arr, date);
+        const _parkings = !isAll ? await filterAndSetAvailableParkings(arr, date) : await setAllParkings(arr, date);
 
         return _parkings;
     },
 
-
-    setAllParkings = (arr) => {
-
-    }
 
     filterAndSetAvailableParkings = async (arr, date) => {
         const parkings =  await cache();
@@ -42,9 +38,28 @@ const cache = require('../cache/cache')
         };
 
         return obj
-
     }
+    setAllParkings = async (arr, date) => {
+        const parkings =  await cache();
 
+        if(_availableParkings && _availableParkings.length > 0) {
+
+            parkings.forEach((itm) => {
+                let isExist = arr.find(element => {
+                           element.parkingId === el.parkingId;
+                  });
+                itm._doc.isAvalable = isExist && isExist.length > 0 ? true : false;
+                itm._doc.date = date;
+            });
+        }
+
+        let obj = {
+            date: date,
+            parkings: parkings
+        };
+
+        return obj
+    }
     getRangeDates = (startDate, endDate) => {
 
         const arr = new Array();
