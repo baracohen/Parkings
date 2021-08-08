@@ -7,8 +7,11 @@
         <img class="logo-img" src="./assets/appLogo.svg">
       </div>
         <div class="col-md-6 col-sm-12" id="nav">
-          <router-link to="/">Home</router-link> |
-          <router-link to="/parkings">Parkings</router-link>
+          <router-link to="/">HOME</router-link>
+          <router-link to="/parkings">BOOKINGS</router-link>
+          <router-link to="/userOrders">MY SPOTS</router-link>
+          <router-link to="/parkings">ALL SPOTS</router-link>
+
         </div>
         <div class="avatar-wrapper col-md-3 col-sm-12">
           <img class="avatar-img" src="./assets/avatar.svg">
@@ -68,8 +71,10 @@ body{
 }
 
 #nav a {
-  font-weight: bold;
   color: white;
+  margin-right: 40px;
+  font-size: 14px;
+  text-decoration: none;
 }
 
 .router-link-active {
@@ -82,9 +87,9 @@ body{
   background-repeat:no-repeat;
 }
 .app-top-bar-wrapper {
-  text-align: left;
   margin: 20px;
   display: flex;
+  width: 100%;
   margin-bottom: 150px;
 }
 .logo-img {
@@ -97,9 +102,12 @@ body{
 }
 .avatar-wrapper {
   text-align: right;
+  margin: auto;
 }
 .logo-wrapper {
   text-align: left;
+  margin: auto;
+
 }
 </style>
 

@@ -1,29 +1,20 @@
 <template>
 <section class="container text-center parkings">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/parkings">Parkings</router-link>
-    </div>
-    <div class="row justify-content-center">
-        <div class="box-shadow">
         <div class="">
-          <div>
-            <h1>Welcome back {{$store.state.user.FirstName}}! </h1>
-            <h6> choose date</h6>
             <div class="row dates-wrapper">
-              <div class="col-md-3 "></div>
-              <div class="col-md-3 col-sm-12 start-date-wrapper">
-                <span>Start date</span>
+              <div class="col-md-auto date-wrapper">
+                <label>Select start date</label>
                 <datepicker v-model="startDate"  />
               </div>
-              <div class="col-md-3 col-sm-12 end-date-wrapper">
-                <span>End date</span>
-                <datepicker v-model="endDate"   />
+              <div class="col-md-auto date-wrapper">
+                <label>Select end date</label>
+                <datepicker :disabledDates="{dates:[disabledDates]}" v-model="endDate"   />
               </div>
-              <div class="col-md-3 "></div>
             </div>
-          </div>
-          <button class="btn btn-primary w-25" @click="getAvailableParkings(false)">Go!</button>
+            <div class="filter-btns-wrapper">
+              <FilterButton :clickedFunc="getAvailableParkings"  :buttonText= "`Free spots`"   :active="isAllActive"></FilterButton>
+              <FilterButton :clickedFunc="getAllParkings"  :buttonText= "'All'" :active="!isAllActive"></FilterButton>
+            </div>
           <div class="spinner" v-if="IsSpinnerShow">
             <Spinner />
           </div>
@@ -32,46 +23,49 @@
               <label class="date-label">for {{obj.date}}</label>
             </div>
           <div class="grid">
-            <ParkingCard v-for="(obj, index) in obj.parkings" :prakingObj="obj" v-bind:key="index" :clickedFunc="onParkingClicked" />
+            <ParkingCard v-for="(obj, index) in obj.parkings" :prakingObj="obj" v-bind:key="index"/>
           </div>
           </div>
           <div class="save-delete-oreders">
             <button @click="saveParkings" class="btn btn-primary">Save parkings</button>
           </div>
       </div>
-      </div>
-    </div>
 </section>
+
 </template>
+
 
 <script lang="ts">
 // @ is an alias to /src
 import Spinner from '../components/spinner.vue'
+import FilterButton from '../components/filterButton.vue'
 import ParkingCard from '../components/parkingCard.vue'
 import Datepicker from 'vue3-datepicker'
 import parkingService from '../api/parkingService'
 import commonUtils from '../utils/commonUtils'
-import swal from 'sweetalert';
 import { mapMutations } from 'vuex';
 import { defineComponent } from 'vue'
-import { ParkingModel, ParkingsObj, ParkingSpotModel } from '../models/parkingsModel'
+import { ParkingsObj } from '../models/parkingsModel'
 
 
 
 export default defineComponent({
-  components:{Spinner, ParkingCard,Datepicker},
+  components:{Spinner, ParkingCard,Datepicker, FilterButton},
   data(){
       return {
+          disabledDates: {
+            from: new Date(Date.now() + 12096e5), // Disable all dates after specific date
+            days: [6, 5], // Disable Saturday's and Sunday's
+          },
           IsSpinnerShow: false as boolean,
           startDate: new Date() as Date,
           endDate: new Date() as Date,
-          disabledDates: {},
-          
+          isAllActive: false as boolean
       }
   },
   created() {
     this.cleanParkingsToAdd();
-    this.getTodayParkings(false);
+    this.getAvailableParkings(false);
     //this.setDisabledDays();
   },
   
@@ -98,7 +92,6 @@ export default defineComponent({
             _data[0].date = commonUtils.setDateFormat(tempDate);
 
             this.IsSpinnerShow = false;
-            commonUtils.setIsSelectedFalse(_data[0]);
 
             this.setToParkingToShow(_data)
           }
@@ -107,12 +100,12 @@ export default defineComponent({
 
       async getAvailableParkings(isAll: boolean) {
         
-
+        this.isAllActive = isAll;
         this.cleanParkingsToAdd();
         this.IsSpinnerShow = true;
-
-        let range = commonUtils.getRangeDates(commonUtils.saveDateFormat(this.startDate.toString()), commonUtils.saveDateFormat(this.endDate.toString()));
-        debugger;
+        let _startDate = commonUtils.saveDateFormat(this.startDate.toString());
+        let _endDate = commonUtils.saveDateFormat(this.endDate.toString());
+        let range = commonUtils.getRangeDates(_startDate, _endDate);
        if(range && range.length > 0) {
            let newDateFormats = [] as any;
            range.forEach((obj) => {
@@ -124,71 +117,16 @@ export default defineComponent({
 
           if(data && data.length > 0) {
             this.IsSpinnerShow = false;
-            commonUtils.setIsSelectedFalse(data);
             this.setToParkingToShow(data)
           }
        }
       },
 
-      async saveParkings() {
-        let newArr = [] as Array<ParkingSpotModel>;
-
-        this.$store.state.parkingsToAdd.forEach(element => {
-          let obj= {} as ParkingSpotModel
-
-          obj.parkingId = element.parkingId,
-          obj.date = commonUtils.saveDateFormat(element.date),
-          obj.floor = element.floor,
-          obj.userId = this.$store.state.user.userId
-          newArr.push(obj);
-        });
-          let data = await parkingService.saveParkings(newArr)
-          if(data) {
-
-           swal("Congrats! all the parkings are saved for you!", {
-                icon: "success",
-            });
-          } else {
-              swal("Someone has ordered some of the parkings, please refresh the page and try again", {
-                icon: "error",
-            });
-          }
-
+      getAllParkings() {
+        this.getAvailableParkings(true);
       },
 
-    onParkingClicked(data: ParkingModel) {
 
-          let isExist = this.$store.state.parkingsToAdd.filter((obj: ParkingModel) => {return obj.userId == data.userId && obj.date == data.date});
-          let obj = this.$store.state.parkingsToShow.filter((obj: ParkingsObj) => {return obj.date === data.date});
-          if(!data.isSelected) {
-            if(isExist && isExist.length > 0 && obj && obj.length > 0) {
-              obj[0].parkings.forEach( (obj: ParkingModel) => { 
-                if(obj.isSelected) {
-                   obj.isSelected = false; 
-                }
-              });
-              this.deleteFromParkingsToAdd(isExist.shift())
-            }
-              data.isSelected = true;
-              this.addToParkingsToAdd(data)
-          } else {
-              obj[0].parkings.forEach( (obj: ParkingModel) => { 
-                if(obj.parkingId === isExist[0].parkingId) {
-                   obj.isSelected = false; 
-                }
-              });
-            this.deleteFromParkingsToAdd(data)
-          }
-      },
-
-    // setDisabledDays() {
-    //   let _newDate = this.picked.getDate() + 7;
-    //   this.disabledDates = {
-    //     from: this.picked,
-    //     to: _newDate,
-    //     daysOfMonth: "05"
-    //   };
-    // },
   },
 })
 
@@ -213,25 +151,36 @@ export default defineComponent({
             min-height: 10px;
             margin: 40px;
           }
-          .grid > div{
-            background-color:lightgray;
-            padding: 50px;
-          }
           .grid > div ::before{
             content: "";
             display: block;
           }
           .dates-wrapper {
             display: flex;
-            margin: 50px;
+            margin: 20px;
             position: relative;
           }
-          .parking-view-wrapper {
-            border-bottom: 1px solid grey;
+          .save-delete-oreders {
+            margin: 40px;
           }
-    }
-    .save-delete-oreders {
-      margin: 40px;
-    }
+          .date-wrapper {
+            text-align: left;
+            font-size: 14px;
+            margin-right: 15px;
+            border-radius: 4px;
+          }
+          .v3dp__datepicker > input{
+            height: 50px;
+            background-color: transparent;
+            color: white;
+            border: 1px solid #6d6d6d;
+            width: 265px;
+            border-radius: 4px;
+          };
+          .filter-btns-wrapper {
+            text-align: left;
+            margin: 34px;
+          }
 
+    }
 </style>

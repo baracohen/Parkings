@@ -32,10 +32,11 @@ export default class parkingService{
       }
     }
 
-    static async saveParkings(parkings: Array<ParkingSpotModel>):Promise<boolean> {
+    static async saveParkings(parking: ParkingSpotModel):Promise<boolean> {
       try{
+        debugger;
         const res = await axios.post("http://localhost:5000/api/parkings/saveParkings",{
-          parkings: parkings,
+          parkingConnection: parking,
         });
         return res.data;
       }catch(err) {

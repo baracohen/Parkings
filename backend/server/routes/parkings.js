@@ -51,30 +51,33 @@ router.post('/todayUserParking', async (req, res) => {
 });
 
 router.post('/saveParkings', async (req, res) => {
-    if(req.body.parkings && req.body.parkings.length > 0 ) {
-        const _parkings = req.body.parkings;
+    if(req.body.parkingConnection ) {
+        const _parkingConnection = req.body.parkingConnection;
         var sendExist = false;
-        
-        for (const parking of _parkings) {
-            const query = { "parkingId": parking.parkingId, "date": parking.date };
-            const _isExist = await connectionModel.find(query);
- 
-            if(_isExist && _isExist.length > 0 ) {
-                 sendExist = true;
-                 break;
-            };
-          }
+
+        const query = { "parkingId": _parkingConnection.parkingId, "date": _parkingConnection.date };
+        const _isExist = await connectionModel.find(query);
+
+        if(_isExist && _isExist.length > 0 ) {
+             sendExist = true;
+        };
+
         if(!sendExist) {
             try{
                 const options = { ordered: true };
-                const result = await connectionModel.insertMany(_parkings, options);
+                console.log(_parkingConnection);
+
+                const result = await connectionModel.create(_parkingConnection);
+
                 res.send(result);
 
             }catch(err){
+                console.log(err);
                 res.send(err);
             }
 
         } else {
+            res.send(false);
             res.send(false);
 
         }
@@ -193,7 +196,7 @@ router.post('/availableParkings', async (req, res) => {
     })
 });
 
-router.post('/availableParkings', async (req, res) => {
+router.post('/todayParkings', async (req, res) => {
     
     
     let _parkings = [];

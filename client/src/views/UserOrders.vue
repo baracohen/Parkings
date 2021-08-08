@@ -40,9 +40,8 @@ import Spinner from '../components/spinner.vue'
 import ParkingCard from '../components/parkingCard.vue'
 import swal from 'sweetalert';
 import parkingService from '../api/parkingService'
-import { ParkingModel, ParkingsObj } from '../models/parkingsModel';
+import { ParkingsObj } from '../models/parkingsModel';
 import { mapMutations } from 'vuex';
-import commonUtils from '../utils/commonUtils';
 import { defineComponent } from 'vue'
 
 export default defineComponent({
@@ -74,7 +73,6 @@ export default defineComponent({
         debugger;
        if(data && data.length > 0) {
             this.IsSpinnerShow = false;
-            commonUtils.setIsSelectedFalse(data);
             this.setToParkingToShow(data)
           }
       },
@@ -102,17 +100,7 @@ export default defineComponent({
             });
 
       },
-      onParkingClicked(data: ParkingModel) {
 
-          if(!data.isSelected) {
-          this.addToParkingsToDelete(data);
-
-          } else {
-            this.deleteFromParkingsToDelete(data)
-          }
-            data.isSelected = !data.isSelected;
-
-      }
 }
 })
 </script>

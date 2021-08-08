@@ -4,10 +4,9 @@
     <div class="home-text-wrapper">
     <div class="spinner" v-if="$store.state.parkingSpot.parkingId">
       <Spinner />
-      <label>
-        You parking spot for today: {{this.date}}
+      <label class="is-parking-text">
+        You parking spot for today: {{$store.state.parkingSpot.date}}
       </label>
-        <label class="parkingSpot">{{$store.state.parkingSpot.parkingId}}</label>
     </div>
       <div class='no-parking-spot' v-else>
         <label>You have no booked parking spots yet. </label>
@@ -15,8 +14,9 @@
       </div>
     </div>
       <div class="parking-img-wrapper">
-        <div v-if="$store.state.parkingSpot.parkingId">
-          {{$store.state.parkingSpot.parkingId}}
+        <div class="is-parking-wrapper" v-if="$store.state.parkingSpot.parkingId">
+          <label class="floor-label">Floor - {{$store.state.parkingSpot.floor}}</label>
+          <label class="parking-spot-label"> {{$store.state.parkingSpot.parkingId}} </label>
         </div>
         <div v-else>
           <img src='../assets/no-parking.svg' />
@@ -26,7 +26,7 @@
       <div v-if="$store.state.parkingSpot.parkingId">
         <button  @click="redirectMyOrders" type="button" class="btn btn-primary btn-lg orders-btn">Cancel reservation</button>
       </div>
-        <button @click="redirect" type="button" class="btn btn-primary btn-lg orders-btn">Book parking spot</button>
+        <button @click="redirect" type="button" class="btn btn-primary btn-lg orders-btn">Book parking spots</button>
     </div>
 
   </div>
@@ -40,11 +40,6 @@ import commonUtils from '../utils/commonUtils';
 
 export default defineComponent({
   name: 'HomeComponent',
-    data(){
-      return {
-          date: '' as string,
-      }
-  },
   props: { },
 
   created(){
@@ -58,12 +53,10 @@ export default defineComponent({
 
     async getParkingSpot() {
         let data: any;
-        let _date = commonUtils.setDateFormat(new Date())
+        let _date = commonUtils.saveDateFormat(new Date().toString());
             data = await parkingService.getTodayUserParking(this.$store.state.user.userId, _date);
 
         if(data != false && data.length > 0 ) {
-            this.date = commonUtils.saveDateFormat(new Date().toString());
-
             this.setParkingSpot(data.shift());
         }
     },
@@ -95,14 +88,12 @@ li {
 a {
   color: #42b983;
 }
-.parkingSpot {
-  align-items: center;
-  background-color: darkgrey;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  font-size: 75px;
-  margin: 40px;
+.parking-spot-label {
+  font-size: 100px;
+  font: bold;
+}
+.floor-label {
+  font-size: 18px;
 }
 .order-prakings-wrapper {
   margin-top: 40px;
@@ -129,5 +120,15 @@ a {
 .parking-img-wrapper img{
   width: 94px;
   height: 250px;
+}
+.is-parking-wrapper {
+  text-align: center;
+  display: grid;
+  margin-top: 45px;
+}
+.is-parking-text {
+  font-size: 16px;
+  width: 300px;
+  font-weight: bold;
 }
 </style>

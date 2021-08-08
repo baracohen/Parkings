@@ -16,6 +16,7 @@ export default {
   position: relative;
   width: 80px;
   height: 80px;
+  color: white;
 }
 .lds-hourglass:after {
   content: " ";
@@ -26,7 +27,7 @@ export default {
   margin: 8px;
   box-sizing: border-box;
   border: 32px solid #000;
-  border-color: #000 transparent #000 transparent;
+  border-color: #ED4036 transparent #EB008A transparent;
   animation: lds-hourglass 1.2s infinite;
 }
 @keyframes lds-hourglass {

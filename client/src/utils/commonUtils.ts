@@ -1,3 +1,7 @@
+import parkingService from "@/api/parkingService";
+import { ParkingModel, ParkingSpotModel } from "@/models/parkingsModel";
+import swal from "sweetalert";
+
 export default class commonUtils{
 
     static setDateFormat(date: Date) {
@@ -12,9 +16,10 @@ export default class commonUtils{
         const dateObj = new Date(date)
         const weekdayNumber = dateObj.getDay();
         const weekdayName = arrayOfWeekdays[weekdayNumber];
-
         const _date = new Date(date);
-        const name = weekdayName + ' ' + _date.getDay() + '.' + _date.getMonth() + '.' + _date.getFullYear() ; 
+        _date.setMonth(_date.getMonth() + 1 );
+        
+        const name = weekdayName + ' ' + _date.getDate() + '.' + _date.getMonth() + '.' + _date.getFullYear() ; 
         return name;
     }
 
@@ -32,21 +37,30 @@ export default class commonUtils{
         return arr;
        }
        
-       static setIsSelectedFalse (parkingsArr: any) {
-            
-            const newArr: any = [];
-            if(parkingsArr && parkingsArr.length > 0) {
-                parkingsArr.forEach((obj:any) => {
-                    if(obj.parkings && obj.parkings.length > 0) {
-                        obj.parkings.forEach((element:any) => {
-                            element.isSelected = false;
-                        });
-                    }
-                });
-            }   
 
-            return newArr;
-       }
+    static async saveConnection (parkingObj : ParkingModel) {
+        const user =  localStorage.getItem("user");
+
+        const obj= {} as ParkingSpotModel
+
+          obj.parkingId = parkingObj.parkingId,
+          obj.date = parkingObj.date,
+          obj.floor = parkingObj.floor,
+          obj.userId = JSON.parse(user as string).userId
+        debugger;
+        const data = await parkingService.saveParkings(obj)
+        if(data) {
+         swal("Congrats! all the parkings are saved for you!", {
+              icon: "success",
+          });
+        } else {
+            swal("Someone has ordered some of the parkings, please refresh the page and try again", {
+              icon: "error",
+          });
+        }
+
+
+    }
 
 
 }
