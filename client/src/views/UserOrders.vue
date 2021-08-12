@@ -70,7 +70,6 @@ export default defineComponent({
       async getUserParkings() {
 
         let data = await parkingService.getUserParkings() as ParkingsObj[];
-        debugger;
        if(data && data.length > 0) {
             this.IsSpinnerShow = false;
             this.setToParkingToShow(data)
