@@ -13,6 +13,8 @@ import { defineComponent } from 'vue'
 import commonUtils from '../utils/commonUtils';
 import swal from "sweetalert";
 
+import { mapMutations } from 'vuex';
+
 
   export default defineComponent({
     props:["toDelete", "clickedFunc", "prakingObj"],
@@ -49,6 +51,9 @@ import swal from "sweetalert";
 
     },
     methods: {
+      ...mapMutations([
+        'cleanParkingSpot',
+      ]),
       saveConnection () {
         commonUtils.saveConnection(this.$props.prakingObj);
 
@@ -56,6 +61,7 @@ import swal from "sweetalert";
       async cancelParking() {
         const data = await commonUtils.cancelConnection(this.$props.prakingObj) as any;
         if(data && data.deletedCount != 0) {
+          this.cleanParkingSpot();
          swal("Congrats! This parking spot was cancel, you can check another one", {
               icon: "success",
          })

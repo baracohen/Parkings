@@ -79,6 +79,9 @@ const store = createStore({
         cleanParkingToShow(state) {
             state.parkingsToShow =[];
         },
+        cleanParkingSpot(state) {
+            state.parkingSpot = {} as ParkingSpotModel;
+        },
         cleanParkingsToDelete(state) {
             state.parkingsToDelete =[];
         },
