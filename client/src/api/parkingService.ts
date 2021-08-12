@@ -34,7 +34,6 @@ export default class parkingService{
 
     static async saveParkings(parking: ParkingSpotModel):Promise<boolean> {
       try{
-        debugger;
         const res = await axios.post("http://localhost:5000/api/parkings/saveParkings",{
           parkingConnection: parking,
         });
@@ -43,6 +42,18 @@ export default class parkingService{
         return err
       }
     }
+
+    static async cancelConnection(parking: ParkingModel):Promise<boolean> {
+      try{
+        const res = await axios.post("http://localhost:5000/api/parkings/cancelConnection",{
+          parkingConnection: parking,
+        });
+        return res.data;
+      }catch(err) {
+        return err
+      }
+    }
+    
     
     
     static async getUserParkings(): Promise<Array<ParkingsObj>> {
@@ -76,11 +87,9 @@ export default class parkingService{
 
     static async getAvailableParkings(dates: string[], isAll: boolean): Promise<Array<ParkingsObj>> {
       try{
-        const res = await axios.post('http://localhost:5000/api/parkings/todayParkings', {
+        const res = await axios.post('http://localhost:5000/api/parkings/availableParkings', {
           dates:dates,
-          isAll: isAll
         });
-        debugger;
         return res.data;
       }catch(err) {
         return err

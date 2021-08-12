@@ -1,28 +1,72 @@
 <template>
-  <div  v-on:click="parkingsClicked"  :class="'parkings-card-wrapper' + ( prakingObj.isAvalable ? ' green' : 'red') ">
+  <div :disabled="isdisabled"  :class="'parkings-card-wrapper ' + ( prakingObj.isAvalable ? 'green' : 'red') ">
     <div class="card-data-wrapper">
       <span class="floor-number">{{prakingObj.floor}}d floor </span>
       <label class="number-parking">Spot {{prakingObj.parkingId}}</label>
     </div>
-
-    <button class="book-btn">Book</button>
+      <button  :disabled="isdisabled" v-on:click="functionClick" :class="'book-btn ' +  buttonClass ">{{buttonText}}</button>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import commonUtils from '../utils/commonUtils';
+import swal from "sweetalert";
 
 
   export default defineComponent({
     props:["toDelete", "clickedFunc", "prakingObj"],
+    data(){
+      return {
+          isdisabled: false as boolean,
+          buttonText: '' as string,
+          isUserBooked: false as boolean,
+          functionClick: false as any,
+          buttonClass: '' as string
+      }
 
-    methods: {
-      parkingsClicked () {
-        commonUtils.saveConnection(this.$props.prakingObj)
-      },
     },
-    
+    created() {
+        this.functionClick = this.saveConnection;
+
+        if(!this.$props.prakingObj.isAvalable) {
+          if(this.$props.prakingObj && (this.$props.prakingObj.userId == this.$store.state.user.userId)) {
+            this.buttonText =  'Cancel';
+            this.buttonClass =  'cancelBg';
+            this.functionClick = this.cancelParking;
+          }else {
+            this.isdisabled = true
+            this.buttonClass =  'disabled';
+            this.buttonText =  'Book';
+          }
+        } else {
+          this.buttonText =  'Book';
+          this.isdisabled = commonUtils.checkIfUserBookedInThisDay(this.$store.state.parkingsToShow, this.$props.prakingObj.date, this.$store.state.user.userId) ;
+
+          this.buttonClass = this.isdisabled ? 'disabled' : '';
+        }
+      
+
+    },
+    methods: {
+      saveConnection () {
+        commonUtils.saveConnection(this.$props.prakingObj);
+
+      },
+      async cancelParking() {
+        const data = await commonUtils.cancelConnection(this.$props.prakingObj) as any;
+        if(data && data.deletedCount != 0) {
+         swal("Congrats! This parking spot was cancel, you can check another one", {
+              icon: "success",
+         })
+        } else {
+          swal("Someone went wrong, please refresh the page and try again", {
+                icon: "error",
+            });
+          }
+
+      }
+    },
   })
 </script>
 
@@ -63,6 +107,15 @@ import commonUtils from '../utils/commonUtils';
     border-radius: 6px;
     font-weight: 600;
     margin-top: 30px;
+  }
+  .disabled {
+    background-color: #E2E8F0;
+    color: #94A3B8;
+  }
+
+  .cancelBg {
+    background-color: #FF2020;
+    color: white;
   }
 
 </style>

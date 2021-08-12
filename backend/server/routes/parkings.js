@@ -169,50 +169,26 @@ router.post('/userParkings', async (req, res) => {
         return false;
     }
 });
+
 router.post('/availableParkings', async (req, res) => {
-    const parkings =  await cache();
-    
-    const query = { "date":{$gte: req.body.startDate, $lt: req.body.endDate }};
-    
-    connectionModel.find(query).exec((err, data) => {
-        if(err) {
-            res.send(err);
-        } else {
-
-            if(data && data.length > 0) {
-                let _parkings = [];
-
-                if(req.body.isAll) {
-                    _parkings = data;
-                } else {
-                    _parkings = helpers.SetAvailableParkings(data);
-                }
-                res.send(_parkings)
-            } else {
-                
-                res.send(parkings)
-            }
-        }
-    })
-});
-
-router.post('/todayParkings', async (req, res) => {
     
     
     let _parkings = [];
     for (const date of req.body.dates) {
         const query = { "date": date};
         let parkings = await connectionModel.find(query)
-
-            if(req.body.isAll) {
-                //_parkings = data;
-                _parkings.push(await helpers.SetAllParkings(parkings, date));
-
-            } else {
-                _parkings.push(await helpers.SetAvailableParkings(parkings, date));
-            }
+            _parkings.push(await helpers.SetParkings(parkings, date));
       }
       res.send(_parkings)
+});
+
+router.post('/cancelConnection', async (req, res) => {
+    
+    const _parkingConnection = req.body.parkingConnection;
+    const query = { "parkingId": _parkingConnection.parkingId, "date": _parkingConnection.date, "userId": _parkingConnection.userId  };
+    const _isExist = await connectionModel.deleteOne(query);
+    
+    res.send(_isExist)
 });
 
 

@@ -20,14 +20,11 @@
           </div>
           <div class="parking-view-wrapper" v-for="(obj, index) in $store.state.parkingsToShow" v-bind:key="index">
             <div class="date-label-div">
-              <label class="date-label">for {{obj.date}}</label>
+              <label class="date-label">{{obj.date}}</label>
             </div>
-          <div class="grid">
-            <ParkingCard v-for="(obj, index) in obj.parkings" :prakingObj="obj" v-bind:key="index"/>
-          </div>
-          </div>
-          <div class="save-delete-oreders">
-            <button @click="saveParkings" class="btn btn-primary">Save parkings</button>
+            <div class="grid">
+              <ParkingCard v-for="(obj, index) in obj.parkings" :prakingObj="obj" v-bind:key="index"/>
+            </div>
           </div>
       </div>
 </section>
@@ -64,17 +61,21 @@ export default defineComponent({
       }
   },
   created() {
-    this.cleanParkingsToAdd();
     this.getAvailableParkings(false);
     //this.setDisabledDays();
   },
-  
+  watch: {
+
+    endDate: function () {
+      this.getAvailableParkings(false);
+    }
+  }, 
   methods: {
     ...mapMutations([
       'setToParkingToShow',
       'deleteFromParkingsToAdd',
       'addToParkingsToAdd',
-      'cleanParkingsToAdd'
+      'cleanParkingToShow'
     ]),
     
       async getTodayParkings(isAll: boolean) {
@@ -99,13 +100,10 @@ export default defineComponent({
       },
 
       async getAvailableParkings(isAll: boolean) {
-        
+        this.cleanParkingToShow();
         this.isAllActive = isAll;
-        this.cleanParkingsToAdd();
         this.IsSpinnerShow = true;
-        let _startDate = commonUtils.saveDateFormat(this.startDate.toString());
-        let _endDate = commonUtils.saveDateFormat(this.endDate.toString());
-        let range = commonUtils.getRangeDates(_startDate, _endDate);
+        let range = commonUtils.getRangeDates(this.startDate, this.endDate);
        if(range && range.length > 0) {
            let newDateFormats = [] as any;
            range.forEach((obj) => {
@@ -159,9 +157,6 @@ export default defineComponent({
             display: flex;
             margin: 20px;
             position: relative;
-          }
-          .save-delete-oreders {
-            margin: 40px;
           }
           .date-wrapper {
             text-align: left;

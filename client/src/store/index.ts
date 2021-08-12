@@ -76,6 +76,9 @@ const store = createStore({
         cleanParkingsToAdd(state) {
             state.parkingsToAdd =[];
         },
+        cleanParkingToShow(state) {
+            state.parkingsToShow =[];
+        },
         cleanParkingsToDelete(state) {
             state.parkingsToDelete =[];
         },
