@@ -22,7 +22,7 @@
               <ParkingCard v-for="(obj, index) in obj.parkings" :prakingObj="obj" v-bind:key="index" :clickedFunc="onParkingClicked" :toDelete="true" />
             </div>
           </div>
-          <div class="spinner" v-if="IsSpinnerShow">
+          <div class="spinner" >
             <Spinner />
           </div>
           <div class="save-delete-oreders">

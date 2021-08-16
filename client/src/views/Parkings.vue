@@ -18,7 +18,6 @@
           <div class="spinner" v-if="IsSpinnerShow">
             <Spinner />
           </div>
-          <div v-if="isTest"  >
             <div class="parking-view-wrapper" v-for="(obj, index) in getParkingToShow" :key="index">
               <div class="date-label-div">
                 <label class="date-label">{{obj.date}}</label>
@@ -27,7 +26,6 @@
                 <ParkingCard v-for="(obj, index) in obj.parkings" :prakingObj="obj" :key="index"/>
               </div>
             </div>
-          </div>
       </div>
 </section>
 
@@ -153,6 +151,7 @@ export default defineComponent({
             align-items: center;
           }
           .spinner {
+            position: relative;
             margin-top: 50px;
           }
           .grid{

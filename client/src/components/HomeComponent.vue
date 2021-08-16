@@ -2,13 +2,14 @@
   <div class="container home-wrapper">
     <h1>Welcome {{ $store.state.user.FirstName }}</h1>
     <div class="home-text-wrapper">
-    <div class="spinner" v-if="$store.state.parkingSpot.parkingId">
+    <div class="spinner" >
       <Spinner />
+
       <label class="is-parking-text">
         You parking spot for today: {{$store.state.parkingSpot.date}}
       </label>
     </div>
-      <div class='no-parking-spot' v-else>
+      <div class='no-parking-spot' >
         <label>You have no booked parking spots yet. </label>
         <label> Start from booking your first one.</label>
       </div>

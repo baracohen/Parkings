@@ -12,7 +12,7 @@
                     <div class="title-wrapper">
                         <h1 class="display-3 font-weight-bold">Login</h1>
                         <p class="font-weight-bold">Welcome back</p>
-                        <div v-if="IsSpinnerShow">
+                        <div class="spinner" v-if="IsSpinnerShow">
                             <Spinner />
                         </div>
                     </div>
