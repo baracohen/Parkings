@@ -27,7 +27,7 @@ const cache = require('../cache/cache')
         if(_availableParkings && _availableParkings.length > 0) {
 
             _availableParkings.forEach((itm) =>{
-                itm._doc.isAvalable = true;
+                itm._doc.isAvailable = true;
                 itm._doc.date = date;
             });
         }
@@ -42,14 +42,14 @@ const cache = require('../cache/cache')
     setAllParkings = async (arr, date) => {
         const parkings =  await cache();
             parkings.forEach((itm) => {
-                itm._doc.isAvalable =  true;
+                itm._doc.isAvailable =  true;
                 itm._doc.date = date;
 
                 let isExist = arr && arr.length > 0 ? arr.filter(element => {
                            return element.parkingId === itm.parkingId;
                   }) : [];
                 if(isExist && isExist.length > 0) {
-                    itm._doc.isAvalable =  false;
+                    itm._doc.isAvailable =  false;
                     itm._doc.userId = isExist[0].userId;
                 }
             });

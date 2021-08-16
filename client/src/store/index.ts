@@ -1,5 +1,6 @@
 import { ParkingModel, ParkingsObj, ParkingSpotModel } from '@/models/parkingsModel';
 import UserModel from '@/models/userModel';
+import state from 'sweetalert/typings/modules/state';
 import { createStore, Store } from 'vuex'
 
 
@@ -12,7 +13,6 @@ export interface State {
     parkingsToAdd: Array<ParkingModel>,
     parkingsToShow: Array<ParkingsObj>,
     parkings: Array<ParkingModel>
-
 }
 
 declare module "@vue/runtime-core" {
@@ -28,13 +28,23 @@ const store = createStore({
         user: {} as UserModel,
         parkingsToDelete:[] as Array<ParkingModel> ,
         parkingsToAdd: [] as Array<ParkingModel>,
-        parkingsToShow: [] as Array<ParkingModel>,
+        parkingsToShow: [] as Array<ParkingsObj>,
         parkings: [] as Array<ParkingModel>,
         parkingSpot: {} as ParkingSpotModel,
-
-
     },
-    getters:{},
+    getters:{
+        getParkingToShow(state){
+            return state.parkingsToShow
+        },
+        getSpot(state){
+            if(state.parkingsToShow && state.parkingsToShow.length > 0) {
+                return state.parkingsToShow[0].parkings[0]
+
+            } else {
+                return "Test"
+            }
+        }
+    },
     mutations:{
         saveUser(state, newVal) {
             state.user = newVal
@@ -42,6 +52,12 @@ const store = createStore({
         setParkingSpot(state, newVal) {
             state.parkingSpot = newVal
         },
+        setparkingsToShowIndex(state, newVal) {
+                state.parkingsToShow.splice(newVal.index, newVal.index, newVal.data);
+                const arr = [] as ParkingsObj[];
+                state.parkingsToShow = arr.concat(state.parkingsToShow);
+        },
+
         addToParkingsToDelete(state, newVal) {
             state.parkingsToDelete.push(newVal);
             console.log(state.parkingsToDelete)
@@ -85,8 +101,8 @@ const store = createStore({
         cleanParkingsToDelete(state) {
             state.parkingsToDelete =[];
         },
-        setToParkingToShow(state, newVal: ParkingModel[] ) {
-            state.parkingsToShow = newVal;
+        setToParkingToShow(state, newVal: ParkingsObj[] ) {
+            state.parkingsToShow =  JSON.parse(JSON.stringify(newVal));
         },
     },
     actions: {
@@ -117,6 +133,10 @@ const store = createStore({
         setParkingSpot({commit}, obj){
             commit('setParkingSpot', obj)
         },
+        setparkingsToShowIndex({commit}, obj){
+            commit('setparkingsToShowIndex', obj)
+        },
+        
         
                         
     },

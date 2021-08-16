@@ -1,4 +1,5 @@
 export  interface ParkingModel{
+    parkings: any;
     parkingId: number,
     isAvailable: boolean,
     userId?: string,

@@ -51,17 +51,7 @@ export default class commonUtils{
           obj.date = parkingObj.date,
           obj.floor = parkingObj.floor,
           obj.userId = JSON.parse(user as string).userId
-        const data = await parkingService.saveParkings(obj)
-        if(data) {
-         swal("Congrats! all the parkings are saved for you!", {
-              icon: "success",
-          });
-        } else {
-            swal("Someone has ordered some of the parkings, please refresh the page and try again", {
-              icon: "error",
-          });
-        }
-
+          return await parkingService.saveParkings(obj)
     }
 
     static getUser(){

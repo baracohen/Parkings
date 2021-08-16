@@ -1,10 +1,10 @@
 <template>
-  <div :disabled="isdisabled"  :class="'parkings-card-wrapper ' + ( prakingObj.isAvalable ? 'green' : 'red') ">
+  <div :disabled="isdisabled"  :class="'parkings-card-wrapper ' + ( prakingObj.isAvailable ? 'green' : 'red') ">
     <div class="card-data-wrapper">
       <span class="floor-number">{{prakingObj.floor}}d floor </span>
       <label class="number-parking">Spot {{prakingObj.parkingId}}</label>
     </div>
-      <button  :disabled="isdisabled" v-on:click="functionClick" :class="'book-btn ' +  buttonClass ">{{buttonText}}</button>
+      <button  :disabled="spotState.isdisabled" v-on:click="functionClick" :class="'book-btn ' +  spotState.buttonClass ">{{spotState.buttonText}}</button>
   </div>
 </template>
 
@@ -13,7 +13,7 @@ import { defineComponent } from 'vue'
 import commonUtils from '../utils/commonUtils';
 import swal from "sweetalert";
 
-import { mapMutations } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 
   export default defineComponent({
@@ -23,45 +23,107 @@ import { mapMutations } from 'vuex';
           isdisabled: false as boolean,
           buttonText: '' as string,
           isUserBooked: false as boolean,
-          functionClick: false as any,
-          buttonClass: '' as string
+          buttonClass: '' as string,
+          index: -1 as number
       }
 
     },
     created() {
-        this.functionClick = this.saveConnection;
 
-        if(!this.$props.prakingObj.isAvalable) {
-          if(this.$props.prakingObj && (this.$props.prakingObj.userId == this.$store.state.user.userId)) {
-            this.buttonText =  'Cancel';
-            this.buttonClass =  'cancelBg';
-            this.functionClick = this.cancelParking;
-          }else {
-            this.isdisabled = true
-            this.buttonClass =  'disabled';
-            this.buttonText =  'Book';
-          }
-        } else {
-          this.buttonText =  'Book';
-          this.isdisabled = commonUtils.checkIfUserBookedInThisDay(this.$store.state.parkingsToShow, this.$props.prakingObj.date, this.$store.state.user.userId) ;
-
-          this.buttonClass = this.isdisabled ? 'disabled' : '';
-        }
-      
+     // this.init()
 
     },
+    computed: {
+       ...mapGetters([
+        'getSpot',
+      ]),
+      spotState() {
+        let book = false;
+        let buttonText = "Book";
+        let buttonClass = "";
+        let isdisabled = false;
+        if(!this.$props.prakingObj.isAvailable) {
+          if(this.$props.prakingObj && (this.$props.prakingObj.userId == this.$store.state.user.userId)) {
+            buttonText =  'Cancel';
+            buttonClass =  'cancelBg';
+            book = true;
+//            this.functionClick = this.cancelParking;
+          }else {
+            isdisabled = true
+            buttonClass =  'disabled';
+            buttonText =  'Book';
+          }
+        } else {
+          buttonText =  'Book';
+          isdisabled = commonUtils.checkIfUserBookedInThisDay(this.$store.state.parkingsToShow, this.$props.prakingObj.date, this.$store.state.user.userId) ;
+
+          buttonClass = isdisabled ? 'disabled' : '';
+        }
+        return {
+          isdisabled,
+          buttonText,
+          buttonClass,
+          book,
+
+        }
+      }
+    },
     methods: {
+
       ...mapMutations([
         'cleanParkingSpot',
+        'setparkingsToShowIndex',
       ]),
-      saveConnection () {
-        commonUtils.saveConnection(this.$props.prakingObj);
 
+      functionClick() {
+        this.spotState.book ?  this.cancelParking() : this.saveConnection();
       },
+
+      async saveConnection () {
+        const data = await commonUtils.saveConnection(this.$props.prakingObj) as any;
+        
+        if(data && data.deletedCount != 0) {
+          this.reRender(false);
+        swal("Congrats! This parking spot was cancel, you can check another one", {
+              icon: "success",
+        });
+        console.log(this.getSpot);
+        } else {
+          swal("Someone went wrong, please refresh the page and try again", {
+                icon: "error",
+            });
+        }
+      },
+
+      reRender (Available: boolean) {
+
+        this.$store.state.parkingsToShow.forEach((element, i) => {
+
+          if(element.date == this.$props.prakingObj.date) {
+            this.index = i
+
+             element.parkings.forEach(obj => {if(obj.parkingId == this.$props.prakingObj.parkingId) {
+                obj.userId = Available ? undefined : this.$store.state.user.userId;
+                obj.isAvailable = Available;
+
+             }});
+
+             let obj = {
+                index: this.index,
+                data: element
+             }
+            this.setparkingsToShowIndex(obj)
+            
+          }
+          
+        });
+      },
+
       async cancelParking() {
         const data = await commonUtils.cancelConnection(this.$props.prakingObj) as any;
         if(data && data.deletedCount != 0) {
           this.cleanParkingSpot();
+          this.reRender(true)
          swal("Congrats! This parking spot was cancel, you can check another one", {
               icon: "success",
          })
@@ -69,8 +131,7 @@ import { mapMutations } from 'vuex';
           swal("Someone went wrong, please refresh the page and try again", {
                 icon: "error",
             });
-          }
-
+        }
       }
     },
   })

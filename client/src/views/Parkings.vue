@@ -18,12 +18,14 @@
           <div class="spinner" v-if="IsSpinnerShow">
             <Spinner />
           </div>
-          <div class="parking-view-wrapper" v-for="(obj, index) in $store.state.parkingsToShow" v-bind:key="index">
-            <div class="date-label-div">
-              <label class="date-label">{{obj.date}}</label>
-            </div>
-            <div class="grid">
-              <ParkingCard v-for="(obj, index) in obj.parkings" :prakingObj="obj" v-bind:key="index"/>
+          <div v-if="isTest"  >
+            <div class="parking-view-wrapper" v-for="(obj, index) in getParkingToShow" :key="index">
+              <div class="date-label-div">
+                <label class="date-label">{{obj.date}}</label>
+              </div>
+              <div class="grid">
+                <ParkingCard v-for="(obj, index) in obj.parkings" :prakingObj="obj" :key="index"/>
+              </div>
             </div>
           </div>
       </div>
@@ -40,7 +42,7 @@ import ParkingCard from '../components/parkingCard.vue'
 import Datepicker from 'vue3-datepicker'
 import parkingService from '../api/parkingService'
 import commonUtils from '../utils/commonUtils'
-import { mapMutations } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 import { defineComponent } from 'vue'
 import { ParkingsObj } from '../models/parkingsModel'
 
@@ -57,7 +59,9 @@ export default defineComponent({
           IsSpinnerShow: false as boolean,
           startDate: new Date() as Date,
           endDate: new Date() as Date,
-          isAllActive: false as boolean
+          isAllActive: false as boolean,
+          isTest: true as boolean
+          
       }
   },
   created() {
@@ -70,6 +74,12 @@ export default defineComponent({
       this.getAvailableParkings(false);
     }
   }, 
+  computed: {
+     ...mapGetters([
+       'getParkingToShow',
+       'getSpot',
+    ]),
+  },
   methods: {
     ...mapMutations([
       'setToParkingToShow',
@@ -77,7 +87,10 @@ export default defineComponent({
       'addToParkingsToAdd',
       'cleanParkingToShow'
     ]),
-    
+    test () {
+      this.setToParkingToShow(this.getParkingToShow);
+      this.isTest = !this.isTest;
+    },
       async getTodayParkings(isAll: boolean) {
         this.IsSpinnerShow = true;
         let data= [] as ParkingsObj[];
