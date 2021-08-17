@@ -2,14 +2,13 @@
   <div class="container home-wrapper">
     <h1>Welcome {{ $store.state.user.FirstName }}</h1>
     <div class="home-text-wrapper">
-    <div class="spinner" >
+    <div class="spinner" v-if="$store.state.parkingSpot.parkingId">
       <Spinner />
-
       <label class="is-parking-text">
         You parking spot for today: {{$store.state.parkingSpot.date}}
       </label>
     </div>
-      <div class='no-parking-spot' >
+      <div class='no-parking-spot' v-else>
         <label>You have no booked parking spots yet. </label>
         <label> Start from booking your first one.</label>
       </div>
@@ -25,7 +24,7 @@
       </div>
     <div class="order-prakings-wrapper">
       <div v-if="$store.state.parkingSpot.parkingId">
-        <button  @click="redirectMyOrders" type="button" class="btn btn-primary btn-lg orders-btn">Cancel reservation</button>
+        <button  @click="cancelParkings" type="button" class="btn btn-primary btn-lg orders-btn">Cancel reservation</button>
       </div>
         <button @click="redirect" type="button" class="btn btn-primary btn-lg orders-btn">Book parking spots</button>
     </div>
@@ -65,7 +64,8 @@ export default defineComponent({
     redirect() {
         this.$router.push({ path: '/parkings' })
     },
-    redirectMyOrders() {
+    
+    cancelParkings() {
         this.$router.push({ path: '/userOrders' })
     }
 
