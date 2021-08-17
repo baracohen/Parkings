@@ -13,7 +13,7 @@ import { defineComponent } from 'vue'
 import commonUtils from '../utils/commonUtils';
 import swal from "sweetalert";
 
-import { mapGetters, mapMutations } from 'vuex';
+import { mapMutations } from 'vuex';
 
 
   export default defineComponent({
@@ -34,9 +34,7 @@ import { mapGetters, mapMutations } from 'vuex';
 
     },
     computed: {
-       ...mapGetters([
-        'getSpot',
-      ]),
+
       spotState() {
         let book = false;
         let buttonText = "Book";
@@ -72,7 +70,7 @@ import { mapGetters, mapMutations } from 'vuex';
 
       ...mapMutations([
         'cleanParkingSpot',
-        'setparkingsToShowIndex',
+        'setParkingsToShowIndex',
       ]),
 
       functionClick() {
@@ -87,7 +85,6 @@ import { mapGetters, mapMutations } from 'vuex';
         swal("Congrats! This parking spot was cancel, you can check another one", {
               icon: "success",
         });
-        console.log(this.getSpot);
         } else {
           swal("Someone went wrong, please refresh the page and try again", {
                 icon: "error",
@@ -112,7 +109,7 @@ import { mapGetters, mapMutations } from 'vuex';
                 index: this.index,
                 data: element
              }
-            this.setparkingsToShowIndex(obj)
+            this.setParkingsToShowIndex(obj)
             
           }
           

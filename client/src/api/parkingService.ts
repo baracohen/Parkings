@@ -85,7 +85,7 @@ export default class parkingService{
     }
 
 
-    static async getAvailableParkings(dates: string[], isAll: boolean): Promise<Array<ParkingsObj>> {
+    static async getAvailableParkings(dates: string[]): Promise<Array<ParkingsObj>> {
       try{
         const res = await axios.post('http://localhost:5000/api/parkings/availableParkings', {
           dates:dates,

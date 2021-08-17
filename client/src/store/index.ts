@@ -12,6 +12,7 @@ export interface State {
     parkingsToDelete: Array<ParkingModel> ,
     parkingsToAdd: Array<ParkingModel>,
     parkingsToShow: Array<ParkingsObj>,
+    allParkings: Array<ParkingsObj>,
     parkings: Array<ParkingModel>
 }
 
@@ -31,19 +32,21 @@ const store = createStore({
         parkingsToShow: [] as Array<ParkingsObj>,
         parkings: [] as Array<ParkingModel>,
         parkingSpot: {} as ParkingSpotModel,
+        allParkings: [] as Array<ParkingsObj>,
+
+
     },
     getters:{
         getParkingToShow(state){
             return state.parkingsToShow
         },
-        getSpot(state){
-            if(state.parkingsToShow && state.parkingsToShow.length > 0) {
-                return state.parkingsToShow[0].parkings[0]
-
-            } else {
-                return "Test"
-            }
-        }
+        getUserId(state){
+            return state.user.userId
+        },
+        getAllParkings(state){
+            return state.allParkings
+        },
+        
     },
     mutations:{
         saveUser(state, newVal) {
@@ -52,93 +55,53 @@ const store = createStore({
         setParkingSpot(state, newVal) {
             state.parkingSpot = newVal
         },
-        setparkingsToShowIndex(state, newVal) {
-                state.parkingsToShow.splice(newVal.index, newVal.index, newVal.data);
-                const arr = [] as ParkingsObj[];
-                state.parkingsToShow = arr.concat(state.parkingsToShow);
-        },
-
-        addToParkingsToDelete(state, newVal) {
-            state.parkingsToDelete.push(newVal);
-            console.log(state.parkingsToDelete)
-        },
-        addToParkingsToAdd(state, newVal: ParkingModel) {
-            state.parkingsToAdd.push(newVal);
-            console.log(state.parkingsToAdd);
-        },
-        deleteFromParkingsToDelete(state, newVal: ParkingModel) {
-            state.parkingsToDelete.forEach((element, index) => 
-            {
-                if(element && element.parkingId) {
-                    if(element.parkingId === newVal.parkingId && newVal.date === element.date) {
-                        state.parkingsToDelete.splice(index, 1);
-                        return false;
-                    }
-                }
-            });
-
-        },
-        deleteFromParkingsToAdd(state, newVal: ParkingModel) {
-            state.parkingsToAdd.forEach((element, index) => 
-            {
-                if(element && element.parkingId) {
-                    if(element.parkingId === newVal.parkingId && newVal.date ===  element.date) {
-                        state.parkingsToAdd.splice(index, 1);
-                        return false;
-                    }
-                }
-            });
-        } ,
-        cleanParkingsToAdd(state) {
-            state.parkingsToAdd =[];
-        },
-        cleanParkingToShow(state) {
-            state.parkingsToShow =[];
-        },
-        cleanParkingSpot(state) {
-            state.parkingSpot = {} as ParkingSpotModel;
-        },
-        cleanParkingsToDelete(state) {
-            state.parkingsToDelete =[];
+        setAllParkings(state, newVal: ParkingsObj[] ) {
+            state.allParkings = JSON.parse(JSON.stringify(newVal));
+            
         },
         setToParkingToShow(state, newVal: ParkingsObj[] ) {
             state.parkingsToShow =  JSON.parse(JSON.stringify(newVal));
         },
+        setParkingsToShowIndex(state, newVal) {
+            if(newVal.index === 0) {
+               state.parkingsToShow[newVal.index] =  newVal.data;
+            } else {
+                state.parkingsToShow.splice(newVal.index, newVal.index, newVal.data);
+                const arr = [] as ParkingsObj[];
+                state.parkingsToShow = arr.concat(state.parkingsToShow);
+            }
+            
+        },
+
+        cleanParkingToShow(state) {
+            state.parkingsToShow = [];
+        },
+        cleanAllParkings(state) {
+            state.allParkings = [];
+        },
+        cleanParkingSpot(state) {
+            state.parkingSpot = {} as ParkingSpotModel;
+        },
+
     },
     actions: {
         saveUser({commit}, user){
             commit('saveUser', user)
         },
-        addToParkingsToDelete({commit}, obj){
-            commit('addToParkingsToDelete', obj)
-        },
-        addToParkingsToAdd({commit}, obj){
-            commit('addToParkingsToAdd', obj)
-        },
-        deleteFromParkingsToDelete({commit}, obj){
-            commit('deleteFromParkingsToDelete', obj)
-        },
-        deleteFromParkingsToAdd({commit}, obj){
-            commit('deleteFromParkingsToAdd', obj)
-        },
-        cleanParkingsToAdd({commit}, obj){
-            commit('cleanParkingsToAdd')
-        },
-        cleanParkingsToDelete({commit}, obj){
-            commit('cleanParkingsToDelete')
-        },
+
         setToParkingToShow({commit}, obj){
             commit('setToParkingToShow', obj)
         },
         setParkingSpot({commit}, obj){
             commit('setParkingSpot', obj)
         },
-        setparkingsToShowIndex({commit}, obj){
-            commit('setparkingsToShowIndex', obj)
+        setParkingsToShowIndex({commit}, obj){
+            commit('setParkingsToShowIndex', obj)
+        },
+        setAllParkings({commit}, obj){
+            commit('setAllParkings', obj)
         },
         
-        
-                        
     },
     modules: {}
 })

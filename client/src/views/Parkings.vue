@@ -13,7 +13,7 @@
             </div>
             <div class="filter-btns-wrapper">
               <FilterButton :clickedFunc="getAvailableParkings"  :buttonText= "`Free spots`"   :active="isAllActive"></FilterButton>
-              <FilterButton :clickedFunc="getAllParkings"  :buttonText= "'All'" :active="!isAllActive"></FilterButton>
+              <FilterButton :clickedFunc="allButtonFilter"  :buttonText= "'All'" :active="!isAllActive"></FilterButton>
             </div>
           <div class="spinner" v-if="IsSpinnerShow">
             <Spinner />
@@ -42,9 +42,7 @@ import parkingService from '../api/parkingService'
 import commonUtils from '../utils/commonUtils'
 import { mapGetters, mapMutations } from 'vuex';
 import { defineComponent } from 'vue'
-import { ParkingsObj } from '../models/parkingsModel'
-
-
+import { ParkingModel, ParkingsObj } from '../models/parkingsModel'
 
 export default defineComponent({
   components:{Spinner, ParkingCard,Datepicker, FilterButton},
@@ -75,44 +73,20 @@ export default defineComponent({
   computed: {
      ...mapGetters([
        'getParkingToShow',
-       'getSpot',
+       'getUserId',
+       'getAllParkings'
     ]),
   },
   methods: {
     ...mapMutations([
       'setToParkingToShow',
-      'deleteFromParkingsToAdd',
-      'addToParkingsToAdd',
-      'cleanParkingToShow'
+      'cleanParkingToShow',
+      'setAllParkings'
     ]),
-    test () {
-      this.setToParkingToShow(this.getParkingToShow);
-      this.isTest = !this.isTest;
-    },
-      async getTodayParkings(isAll: boolean) {
-        this.IsSpinnerShow = true;
-        let data= [] as ParkingsObj[];
-        let date = commonUtils.saveDateFormat(new Date().toString());
-            data = await parkingService.getTodayParkings([date], isAll);
-
-        if(data && data.length > 0) {
-          let _data=  [] ;
-          _data.push(data.shift());
-
-          if(_data && _data.length > 0 && _data[0] && _data[0].date ){
-            let tempDate = new Date(_data[0].date );   
-            _data[0].date = commonUtils.setDateFormat(tempDate);
-
-            this.IsSpinnerShow = false;
-
-            this.setToParkingToShow(_data)
-          }
-        }
-      },
 
       async getAvailableParkings(isAll: boolean) {
-        this.cleanParkingToShow();
         this.isAllActive = isAll;
+        this.cleanParkingToShow();
         this.IsSpinnerShow = true;
         let range = commonUtils.getRangeDates(this.startDate, this.endDate);
        if(range && range.length > 0) {
@@ -122,20 +96,35 @@ export default defineComponent({
         });
         
           
-          let data = await parkingService.getAvailableParkings(newDateFormats, isAll);
+          let data = await parkingService.getAvailableParkings(newDateFormats);
 
           if(data && data.length > 0) {
             this.IsSpinnerShow = false;
-            this.setToParkingToShow(data)
+            this.setAllParkings(data);
+
+            if(isAll) {
+              this.setToParkingToShow(this.getAllParkings);
+              
+            } else {
+                let _data = [] as ParkingsObj[];
+                data.forEach(obj => {
+                  let element = [] as ParkingModel[]
+                      element = obj.parkings.filter(obj => {return obj.isAvailable === true || obj && obj.userId == this.getUserId})
+                      obj.parkings = element
+                      debugger;
+
+                      _data.push(obj);
+                });
+                this.setToParkingToShow(_data); 
+            }
+
           }
        }
       },
 
-      getAllParkings() {
+      allButtonFilter() {
         this.getAvailableParkings(true);
       },
-
-
   },
 })
 
