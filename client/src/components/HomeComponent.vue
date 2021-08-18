@@ -24,7 +24,7 @@
       </div>
     <div class="order-prakings-wrapper">
       <div v-if="$store.state.parkingSpot.parkingId">
-        <button  @click="cancelParkings" type="button" class="btn btn-primary btn-lg orders-btn">Cancel reservation</button>
+        <button  @click="cancelParking" type="button" class="btn btn-primary btn-lg orders-btn">Cancel reservation</button>
       </div>
         <button @click="redirect" type="button" class="btn btn-primary btn-lg orders-btn">Book parking spots</button>
     </div>
@@ -34,24 +34,32 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { mapMutations } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 import parkingService from '../api/parkingService';
 import commonUtils from '../utils/commonUtils';
+import swal from "sweetalert";
 
 export default defineComponent({
   name: 'HomeComponent',
   props: { },
 
   created(){
-    this.getParkingSpot()
+    this.getParkingUserSpot();
   },
 
+  computed:{
+    ...mapGetters([
+      'getParkingSpot'
+    ])
+
+  },
   methods:{
     ...mapMutations([
       'setParkingSpot',
+      'cleanParkingSpot',
     ]),
 
-    async getParkingSpot() {
+    async getParkingUserSpot() {
         let data: any;
         let _date = commonUtils.saveDateFormat(new Date().toString());
             data = await parkingService.getTodayUserParking(this.$store.state.user.userId, _date);
@@ -65,9 +73,19 @@ export default defineComponent({
         this.$router.push({ path: '/parkings' })
     },
     
-    cancelParkings() {
-        this.$router.push({ path: '/userOrders' })
-    }
+      async cancelParking() {
+        const data = await commonUtils.cancelConnection(this.getParkingSpot) as any;
+        if(data && data.deletedCount > 0) {
+          this.cleanParkingSpot();
+         swal("Congrats! This parking spot was cancel, you can check another one", {
+              icon: "success",
+         })
+        } else {
+          swal("Someone went wrong, please refresh the page and try again", {
+                icon: "error",
+            });
+        }
+      }
 
   }
 });

@@ -79,17 +79,17 @@ import { mapMutations } from 'vuex';
 
       async saveConnection () {
         const data = await commonUtils.saveConnection(this.$props.prakingObj) as any;
-        
-        if(data && data.deletedCount != 0) {
+        debugger
+        if(data && data.userId != undefined) {
           this.reRender(false);
-        swal("Congrats! This parking spot was cancel, you can check another one", {
-              icon: "success",
-        });
-        } else {
-          swal("Someone went wrong, please refresh the page and try again", {
-                icon: "error",
-            });
-        }
+          swal("Congrats! This parking spot was saved for you!", {
+                icon: "success",
+          });
+          } else {
+            swal("Someone went wrong, please refresh the page and try again", {
+                  icon: "error",
+              });
+          }
       },
 
       reRender (Available: boolean) {
@@ -118,7 +118,7 @@ import { mapMutations } from 'vuex';
 
       async cancelParking() {
         const data = await commonUtils.cancelConnection(this.$props.prakingObj) as any;
-        if(data && data.deletedCount != 0) {
+        if(data && data.deletedCount > 0) {
           this.cleanParkingSpot();
           this.reRender(true)
          swal("Congrats! This parking spot was cancel, you can check another one", {

@@ -46,6 +46,9 @@ const store = createStore({
         getAllParkings(state){
             return state.allParkings
         },
+        getParkingSpot(state){
+            return state.parkingSpot
+        },
         
     },
     mutations:{
