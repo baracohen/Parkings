@@ -24,7 +24,6 @@
         <div></div>
         <div></div>
     </div>
-    <a class="dribbble" href="https://dribbble.com/shots/5533600-Loading-boxes" target="_blank"><img src="https://cdn.dribbble.com/assets/dribbble-ball-mark-2bd45f09c2fb58dbbfb44766d5d1d07c5a12972d602ef8b32204d28fa3dda554.svg" alt=""></a>
 </div>
 
 <!-- dribbble -->
@@ -43,14 +42,14 @@ $colorLeft: darken(#EB008A, 5%);
 $shadow:#9aa5b3;
 
 .boxes {
---size: 32px;
+    --size: 32px;
     --duration: 800ms;
     height: calc(var(--size) * 2);
     width: calc(var(--size) * 3);
     position: absolute;
     margin: 0;
-    left: 50%;
-    top: 192px;
+    left: 44%;
+    top: 100px;
     /* top: 96%; */
     transform-style: preserve-3d;
     transform-origin: 50% 50%;

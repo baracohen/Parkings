@@ -64,25 +64,18 @@ router.post('/saveParkings', async (req, res) => {
 
         if(!sendExist) {
             try{
-                const options = { ordered: true };
-                console.log(_parkingConnection);
-
                 const result = await connectionModel.create(_parkingConnection);
-
                 res.send(result);
 
             }catch(err){
-                console.log(err);
                 res.send(err);
             }
 
         } else {
             res.send(false);
-            res.send(false);
-
         }
     } else {
-        return false;
+        res.send(false);
     }
 });
 
@@ -96,7 +89,7 @@ router.post('/userParkings', async (req, res) => {
                     parkings[0]._doc.isAvailable =  false;
                     let obj = {
                         date: date,
-                        parkings: parkings[0]
+                        parkings: [parkings[0]]
                     };
                     _parkings.push(obj);
                 }

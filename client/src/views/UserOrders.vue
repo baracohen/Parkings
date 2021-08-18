@@ -8,19 +8,19 @@
               </div>
               <div class="col-md-auto date-wrapper">
                 <label>Select end date</label>
-                <datepicker :disabledDates="{dates:[disabledDates]}" v-model="endDate"   />
+                <datepicker v-model="endDate"   />
               </div>
             </div>
             <div class="filter-btns-wrapper">
-              <FilterButton :clickedFunc="filterFunc"  :buttonText= "`This week`" :active="isThisWeekActive"></FilterButton>
-              <FilterButton :clickedFunc="filterFunc"  :buttonText= "`Next week`" :active="!isThisWeekActive"></FilterButton>
+              <FilterButton :clickedFunc="filterFunc"  :buttonText= "`This week`" :active="isNextWeekActive"></FilterButton>
+              <FilterButton :clickedFunc="filterFunc"  :buttonText= "`Next week`" :active="!isNextWeekActive"></FilterButton>
             </div>
           <div class="user-bookings-wrapper" v-for="(obj, index) in $store.state.parkingsToShow" v-bind:key="index">
             <div class="date-label-div">
               <label class="date-label">{{obj.date}}</label>
             </div>
             <div class="grid">
-              <ParkingCard  :prakingObj="obj" v-bind:key="obj._id" :clickedFunc="onParkingClicked" :toDelete="true" />
+              <ParkingCard v-for="(obj, index) in obj.parkings" :prakingObj="obj" :key="index"/>
             </div>
           </div>
           <div class="spinner" v-if="IsSpinnerShow">
@@ -54,7 +54,7 @@ export default defineComponent({
           IsSpinnerShow: false,
           startDate: new Date() as Date,
           endDate: new Date() as Date,
-          isThisWeekActive: false as boolean,
+          isNextWeekActive: false as boolean,
       }
   },
   created() {
@@ -91,12 +91,14 @@ export default defineComponent({
       },
 
       filterFunc() {
-        this.isThisWeekActive = !this.isThisWeekActive;
+        this.isNextWeekActive = !this.isNextWeekActive;
         this.endDate = new Date();
-        if(this.isThisWeekActive) {
-          this.endDate.setDate(this.endDate.getDate() + 7);
-        } else {
+        if(this.isNextWeekActive) {
           this.endDate.setDate(this.endDate.getDate() + 14);
+
+        } else {
+          this.endDate.setDate(this.endDate.getDate() + 7);
+
         }
       },
 

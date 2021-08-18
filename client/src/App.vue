@@ -10,8 +10,6 @@
           <router-link to="/">HOME</router-link>
           <router-link to="/parkings">BOOKINGS</router-link>
           <router-link to="/userOrders">MY SPOTS</router-link>
-          <router-link to="/parkings">ALL SPOTS</router-link>
-
         </div>
         <div class="avatar-wrapper col-md-3 col-sm-12">
           <img class="avatar-img" src="./assets/avatar.svg">

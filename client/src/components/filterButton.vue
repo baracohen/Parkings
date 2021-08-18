@@ -10,7 +10,6 @@ import { defineComponent } from 'vue'
 
     methods: {
       buttonClicked () {
-        debugger;
         this.$props.clickedFunc();
       },
     },

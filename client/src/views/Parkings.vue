@@ -175,4 +175,16 @@ export default defineComponent({
             display: grid;
         }
     }
+    .v3dp__popout[data-v-2e128338] {
+      width: 100%;
+    }
+    .v3dp__elements button.selected span[data-v-2e128338] {
+      background: linear-gradient(90deg, #ED4036 0%, #EB008A 100%);
+    }
+    .v3dp__datepicker{
+      --elem-hover-bg-color: var(--vdp-hover-bg, #EB008A); 
+
+    } 
+
+    
 </style>
