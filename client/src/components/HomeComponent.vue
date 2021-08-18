@@ -3,7 +3,6 @@
     <h1>Welcome {{ $store.state.user.FirstName }}</h1>
     <div class="home-text-wrapper">
     <div class="spinner" v-if="$store.state.parkingSpot.parkingId">
-      <Spinner />
       <label class="is-parking-text">
         You parking spot for today: {{$store.state.parkingSpot.date}}
       </label>

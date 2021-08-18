@@ -79,7 +79,6 @@ import { mapMutations } from 'vuex';
 
       async saveConnection () {
         const data = await commonUtils.saveConnection(this.$props.prakingObj) as any;
-        debugger
         if(data && data.userId != undefined) {
           this.reRender(false);
           swal("Congrats! This parking spot was saved for you!", {
