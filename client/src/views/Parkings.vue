@@ -42,7 +42,6 @@ import parkingService from '../api/parkingService'
 import commonUtils from '../utils/commonUtils'
 import { mapGetters, mapMutations } from 'vuex';
 import { defineComponent } from 'vue'
-import { ParkingModel, ParkingsObj } from '../models/parkingsModel'
 
 export default defineComponent({
   components:{Spinner, ParkingCard,Datepicker, FilterButton},
@@ -89,11 +88,11 @@ export default defineComponent({
         this.cleanParkingToShow();
         this.IsSpinnerShow = true;
         let range = commonUtils.getRangeDates(this.startDate, this.endDate);
-       if(range && range.length > 0) {
-           let newDateFormats = [] as any;
-           range.forEach((obj) => {
-           newDateFormats.push(commonUtils.saveDateFormat(obj));
-        });
+        if(range && range.length > 0) {
+            let newDateFormats = [] as any;
+            range.forEach((obj) => {
+            newDateFormats.push(commonUtils.saveDateFormat(obj));
+          });
         
           
           let data = await parkingService.getAvailableParkings(newDateFormats);
@@ -106,18 +105,12 @@ export default defineComponent({
               this.setToParkingToShow(this.getAllParkings);
               
             } else {
-                let _data = [] as ParkingsObj[];
-                data.forEach(obj => {
-                  let element = [] as ParkingModel[]
-                      element = obj.parkings.filter(obj => {return obj.isAvailable === true || obj && obj.userId == this.getUserId})
-                      obj.parkings = element
-                      debugger;
 
-                      _data.push(obj);
-                });
-                this.setToParkingToShow(_data); 
+                this.setToParkingToShow(commonUtils.setAvailableParkings(data, this.getUserId)); 
             }
 
+          } else {
+            this.IsSpinnerShow = false;
           }
        }
       },
@@ -131,10 +124,6 @@ export default defineComponent({
 </script>
 <style lang="scss">
     .parkings {
-          .box-shadow{
-            box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-            width: 100%;
-          }
           .text-center {
             text-align: center;
             align-items: center;
@@ -177,6 +166,13 @@ export default defineComponent({
             text-align: left;
             margin: 34px;
           }
-
+        .date-label {
+          float: left;
+          font-size: 20px;
+          font-weight: 600;
+        }
+        .parking-view-wrapper {
+            display: grid;
+        }
     }
 </style>

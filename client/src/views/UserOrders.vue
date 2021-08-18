@@ -1,36 +1,32 @@
 <template>
 <section class="container text-center parkings">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/parkings">Parkings</router-link>
-    </div>
-    <div class="row justify-content-center">
-        <div class="box-shadow">
         <div class="">
-          <div>
-            <div>
-              <img class="avatarImg" :src="$store.state.user.pic">
-              <h1>Welcome {{$store.state.user.FirstName}}! </h1>
+            <div class="row dates-wrapper">
+              <div class="col-md-auto date-wrapper">
+                <label>Select start date</label>
+                <datepicker v-model="startDate"  />
+              </div>
+              <div class="col-md-auto date-wrapper">
+                <label>Select end date</label>
+                <datepicker :disabledDates="{dates:[disabledDates]}" v-model="endDate"   />
+              </div>
             </div>
-            <h6> This is your Bookings</h6>
-          </div>
-          <div class="parking-view-wrapper" v-for="(obj, index) in $store.state.parkingsToShow" v-bind:key="index">
+            <div class="filter-btns-wrapper">
+              <FilterButton :clickedFunc="filterFunc"  :buttonText= "`This week`" :active="isThisWeekActive"></FilterButton>
+              <FilterButton :clickedFunc="filterFunc"  :buttonText= "`Next week`" :active="!isThisWeekActive"></FilterButton>
+            </div>
+          <div class="user-bookings-wrapper" v-for="(obj, index) in $store.state.parkingsToShow" v-bind:key="index">
             <div class="date-label-div">
-              <label class="date-label">for {{obj.date}}</label>
+              <label class="date-label">{{obj.date}}</label>
             </div>
             <div class="grid">
-              <ParkingCard v-for="(obj, index) in obj.parkings" :prakingObj="obj" v-bind:key="index" :clickedFunc="onParkingClicked" :toDelete="true" />
+              <ParkingCard  :prakingObj="obj" v-bind:key="obj._id" :clickedFunc="onParkingClicked" :toDelete="true" />
             </div>
           </div>
-          <div class="spinner" >
+          <div class="spinner" v-if="IsSpinnerShow">
             <Spinner />
           </div>
-          <div class="save-delete-oreders">
-            <button @click="showModal" class="btn btn-primary">Cancel parkings</button>
-          </div>
       </div>
-      </div>
-    </div>
 </section>
 </template>
 
@@ -43,41 +39,65 @@ import parkingService from '../api/parkingService'
 import { ParkingsObj } from '../models/parkingsModel';
 import { mapMutations } from 'vuex';
 import { defineComponent } from 'vue'
+import Datepicker from 'vue3-datepicker'
+import commonUtils from '../utils/commonUtils';
+import FilterButton from '../components/filterButton.vue'
 
 export default defineComponent({
-  components:{Spinner, ParkingCard},
+  components:{Spinner, ParkingCard, Datepicker, FilterButton},
   data(){
       return {
           theData:'',
           deleteMsg:'Are you sure you want to delete this bookings?',
           deleteTitle:'Are you sure',
           deleteIcon:'warning',
-          IsSpinnerShow: false
-
+          IsSpinnerShow: false,
+          startDate: new Date() as Date,
+          endDate: new Date() as Date,
+          isThisWeekActive: false as boolean,
       }
   },
   created() {
-    this.cleanParkingsToDelete();
+    this.endDate.setDate(this.endDate.getDate() + 7);
     this.getUserParkings();
   },
+  watch: {
+    endDate: function () {
+      this.getUserParkings();
+    }
+  }, 
   methods: {
     ...mapMutations([
       'setToParkingToShow',
-      'deleteFromParkingsToDelete',
-      'addToParkingsToDelete',
-      'cleanParkingsToDelete'
+      'cleanParkingToShow',
+
     ]),
       async getUserParkings() {
-
-        let data = await parkingService.getUserParkings() as ParkingsObj[];
-       if(data && data.length > 0) {
-            this.IsSpinnerShow = false;
-            this.setToParkingToShow(data)
-          }
+        this.cleanParkingToShow();
+        this.IsSpinnerShow = true
+        let range = commonUtils.getRangeDates(this.startDate, this.endDate);
+        if(range && range.length > 0) {
+            let newDateFormats = [] as any;
+            range.forEach((obj) => {
+            newDateFormats.push(commonUtils.saveDateFormat(obj));
+          });
+          
+          let data = await parkingService.getUserParkings(newDateFormats) as ParkingsObj[];
+          if(data && data.length > 0) {
+                this.IsSpinnerShow = false;
+                this.setToParkingToShow(data)
+            }
+        }
       },
 
-       deleteItems() {
-
+      filterFunc() {
+        this.isThisWeekActive = !this.isThisWeekActive;
+        this.endDate = new Date();
+        if(this.isThisWeekActive) {
+          this.endDate.setDate(this.endDate.getDate() + 7);
+        } else {
+          this.endDate.setDate(this.endDate.getDate() + 14);
+        }
       },
 
       showModal() {
@@ -104,21 +124,29 @@ export default defineComponent({
 })
 </script>
 <style lang="scss">
-    .avatarImg {
-      width: 200px;
+
+    .user-bookings-wrapper {
+      display: inline-grid;
+      float: left;
+
+        .date-label {
+          float: left;
+          font-size: 16px;
+        }
+      .grid{
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        grid-gap: 2rem;
+        min-height: 10px;
+        margin: 40px;
+        width: 450px;
+      }
     }
 
-    .date-label {
-      float: left;
-      font-size: 20px;
-      font-weight: 600;
-    }
     .date-label-div {
       margin-left: 40px;
       margin-top: 60px;
     }
-    .parking-view-wrapper {
-      display: grid;
-    }
+
 
 </style>

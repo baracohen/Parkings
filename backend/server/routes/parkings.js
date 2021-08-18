@@ -88,83 +88,20 @@ router.post('/saveParkings', async (req, res) => {
 
 router.post('/userParkings', async (req, res) => {
     if(req.body.userId) {
-        res.send([
-            {
-                date:"31.05.16",
-                parkings:
-                [
-                    {
-                    date:"31.05.2021",
-                    parkingId:162,
-                    floor:"",
-                    isAvalable:false
-                    }
-                ]
-            },
-            {
-                date:"1.06.16",
-                parkings:
-                [
-                    {
-                    date:"1.06.2021",
-                    parkingId:162,
-                    floor:"",
-                    isAvalable:false
-                    }
-                ]
-            },
-            {
-                date:"02.06.16",
-                parkings:
-                [
-                    {
-                    date:"02.06.2021",
-                    parkingId:162,
-                    floor:"",
-                    isAvalable:false
-                    }
-                ]
-            }, 
-            {
-                date:"03.06.16",
-                parkings:
-                [
-                    {
-                    date:"03.06.2021",
-                    parkingId:162,
-                    floor:"",
-                    isAvalable:false
-                    }
-                ]
-            },    
-            {
-                date:"04.06.16",
-                parkings:
-                [
-                    {
-                    date:"04.06.2021",
-                    parkingId:162,
-                    floor:"",
-                    isAvalable:false
-                    }
-                ]
-            }, 
-            {
-                date:"05.06.16",
-                parkings:
-                [
-                    {
-                    date:"05.06.2021",
-                    parkingId:162,
-                    floor:"",
-                    isAvalable:false
-                    }
-                ]
-            },                        
-                    
-        ]
-
-        );
+        let _parkings = [];
+        for (const date of req.body.dates) {
+            const query = { "date": date, "userId": req.body.userId};
+            let parkings = await connectionModel.find(query);
+                if(parkings && parkings.length > 0){
+                    parkings[0]._doc.isAvailable =  false;
+                    let obj = {
+                        date: date,
+                        parkings: parkings[0]
+                    };
+                    _parkings.push(obj);
+                }
+          }
+          res.send(_parkings)
     } else {
         return false;
     }

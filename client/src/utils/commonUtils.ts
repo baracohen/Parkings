@@ -73,7 +73,18 @@ export default class commonUtils{
         return false
     }
 
-    
+    static setAvailableParkings(data: ParkingsObj[], userId: string) {
+        const _data = [] as ParkingsObj[];
+                
+        data.forEach(obj => {
+          let element = [] as ParkingModel[]
+              element = obj.parkings.filter(obj => {return obj.isAvailable === true || obj && obj.userId == userId})
+              obj.parkings = element
+
+              _data.push(obj);
+        });
+        return _data;
+    }
 
 
 }

@@ -56,7 +56,7 @@ export default class parkingService{
     
     
     
-    static async getUserParkings(): Promise<Array<ParkingsObj>> {
+    static async getUserParkings(dates: string[]): Promise<Array<ParkingsObj>> {
       let userId;
       const _user = localStorage.getItem('user');
       if(_user && _user.length > 0) {
@@ -64,6 +64,7 @@ export default class parkingService{
       }
       try{
         const res = await axios.post("http://localhost:5000/api/parkings/userParkings",{
+          dates:dates,
           userId: userId,
         });
         return res.data;
