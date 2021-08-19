@@ -62,8 +62,30 @@ const cache = require('../cache/cache')
         return obj
     }
 
+     getFreeSpot = async (arr, date, userId) => {
+        const parkings =  await cache();
+        let freeSpot;
+            parkings.forEach((itm) => {
+                let isExist = arr && arr.length > 0 ? arr.filter(element => {
+                           return element.parkingId === itm.parkingId;
+                  }) : [];
+                if(isExist && isExist.length === 0) {
+                    itm._doc.date =  date;
+                    itm._doc.userId = userId;
+                    freeSpot = itm._doc
+                }
+                if(freeSpot != undefined) {
+                    return false
+                }
+                    
+            });
+
+        return freeSpot
+    }
+
 
 module.exports = {
     SetParkings: SetParkings,
-    SetAllParkings:setAllParkings
+    SetAllParkings:setAllParkings,
+    GetFreeSpot:getFreeSpot
 };

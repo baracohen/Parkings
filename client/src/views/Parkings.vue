@@ -22,8 +22,12 @@
               <div class="date-label-div">
                 <label class="date-label">{{obj.date}}</label>
               </div>
-              <div class="grid">
-                <ParkingCard v-for="(obj, index) in obj.parkings" :prakingObj="obj" :key="index"/>
+              <div v-if="obj.parkings.length > 0" class="grid">
+                  <ParkingCard  v-for="(obj, index) in obj.parkings" :prakingObj="obj" :key="index"/>
+              </div>
+
+              <div v-if="obj.parkings.length === 0" >
+                <span> There are no parking spots available for this day</span>
               </div>
             </div>
       </div>

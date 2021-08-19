@@ -96,4 +96,18 @@ export default class parkingService{
         return err
       }
     }
+    
+    static async generateParking(userId: string, date: string): Promise<Array<ParkingsObj>> {
+      try{
+        const res = await axios.post('http://localhost:5000/api/parkings/generateParking', {
+          date: date,
+          userId:userId,
+        });
+        return res.data;
+      }catch(err) {
+        return err
+      }
+    }
+
+    
 }

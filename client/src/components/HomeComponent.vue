@@ -25,7 +25,11 @@
       <div v-if="$store.state.parkingSpot.parkingId">
         <button  @click="cancelParking" type="button" class="btn btn-primary btn-lg orders-btn">Cancel reservation</button>
       </div>
-        <button @click="redirect" type="button" class="btn btn-primary btn-lg orders-btn">Book parking spots</button>
+        <div class="no-parking-spot-buttons-wrapper" v-else>
+          <button @click="generateParking" type="button" class="btn btn-primary btn-lg orders-btn">Generate parking spot for today</button>
+            <span>Or</span>
+          <button @click="redirect" type="button" class="btn btn-primary btn-lg orders-btn">Book parking spots</button>
+        </div>
     </div>
 
   </div>
@@ -39,7 +43,6 @@ import commonUtils from '../utils/commonUtils';
 import Swal from 'sweetalert2'
 
 
-
 export default defineComponent({
   name: 'HomeComponent',
   props: { },
@@ -50,7 +53,8 @@ export default defineComponent({
 
   computed:{
     ...mapGetters([
-      'getParkingSpot'
+      'getParkingSpot',
+      'getUserId'
     ])
 
   },
@@ -92,6 +96,17 @@ export default defineComponent({
             }
           } 
         })
+      },
+      async generateParking() {
+          let _date = commonUtils.saveDateFormat(new Date().toString());
+          const data = await parkingService.generateParking(this.getUserId, _date) as any;
+
+          if(data) {
+            commonUtils.showSucssesModalWithoutTimer(`Congrats! we found for you a spot, your parking spot is ${data.parkingId}`, true);
+            this.setParkingSpot(data);
+          } else {
+            commonUtils.showErrorModal('Sorry, all the parking spots are unavailable for today')
+          }
       }
   }
 });
@@ -155,5 +170,8 @@ a {
   font-size: 16px;
   width: 300px;
   font-weight: bold;
+}
+.no-parking-spot-buttons-wrapper {
+  display: inline-grid;
 }
 </style>

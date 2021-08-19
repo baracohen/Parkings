@@ -121,5 +121,20 @@ router.post('/cancelConnection', async (req, res) => {
     res.send(_isExist)
 });
 
+router.post('/generateParking', async (req, res) => {
+    
+        const query = { "date": req.body.date};
+        let parkings = await connectionModel.find(query);
+            let parkingConnection = await helpers.GetFreeSpot(parkings, req.body.date, req.body.userId);
+            if(parkingConnection && parkingConnection.parkingId) {
+                const result = await connectionModel.create(parkingConnection);
+                res.send(result)
+            } else {
+                res.send(false)
+            }
+
+});
+
+
 
 module.exports = router;
