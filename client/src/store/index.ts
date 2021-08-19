@@ -1,6 +1,5 @@
 import { ParkingModel, ParkingsObj, ParkingSpotModel } from '@/models/parkingsModel';
 import UserModel from '@/models/userModel';
-import state from 'sweetalert/typings/modules/state';
 import { createStore, Store } from 'vuex'
 
 

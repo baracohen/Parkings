@@ -34,7 +34,6 @@
 // @ is an alias to /src
 import Spinner from '../components/spinner.vue'
 import ParkingCard from '../components/parkingCard.vue'
-import swal from 'sweetalert';
 import parkingService from '../api/parkingService'
 import { ParkingsObj } from '../models/parkingsModel';
 import { mapMutations } from 'vuex';
@@ -100,26 +99,6 @@ export default defineComponent({
           this.endDate.setDate(this.endDate.getDate() + 7);
 
         }
-      },
-
-      showModal() {
-          swal({
-          title: this.deleteTitle,
-          text: this.deleteMsg,
-          icon: "warning",
-          buttons: ["Cancel", "Ok"],
-          dangerMode: true,
-            })
-            .then((willDelete) => {
-              if (willDelete) {
-                  swal("Poof! Your booked parkings has been deleted!", {
-                    icon: "success",
-                });
-              } else {
-                swal("Ok, we didn't delete this items!");
-              }
-            });
-
       },
 
 }

@@ -11,7 +11,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import commonUtils from '../utils/commonUtils';
-import swal from "sweetalert";
 
 import { mapMutations } from 'vuex';
 
@@ -80,14 +79,10 @@ import { mapMutations } from 'vuex';
       async saveConnection () {
         const data = await commonUtils.saveConnection(this.$props.prakingObj) as any;
         if(data && data.userId != undefined) {
-          this.reRender(false);
-          swal("Congrats! This parking spot was saved for you!", {
-                icon: "success",
-          });
+            this.reRender(false);
+            commonUtils.showSucssesModal('Congrats! Your parkings spot has been saved !', false)
           } else {
-            swal("Someone went wrong, please refresh the page and try again", {
-                  icon: "error",
-              });
+            commonUtils.showErrorModal('Someone went wrong, please refresh the page and try again')
           }
       },
 
@@ -119,14 +114,10 @@ import { mapMutations } from 'vuex';
         const data = await commonUtils.cancelConnection(this.$props.prakingObj) as any;
         if(data && data.deletedCount > 0) {
           this.cleanParkingSpot();
-          this.reRender(true)
-         swal("Congrats! This parking spot was cancel, you can check another one", {
-              icon: "success",
-         })
+          this.reRender(true);
+          commonUtils.showSucssesModalWithoutTimer('Your parkings spot has been canceled !', true)
         } else {
-          swal("Someone went wrong, please refresh the page and try again", {
-                icon: "error",
-            });
+          commonUtils.showErrorModal('Someone went wrong, please refresh the page and try again')
         }
       }
     },

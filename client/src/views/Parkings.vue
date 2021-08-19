@@ -3,11 +3,11 @@
         <div class="">
             <div class="row dates-wrapper">
               <div class="col-md-auto date-wrapper">
-                <label>Select start date</label>
+                <label class="date-label">Select start date</label>
                 <datepicker v-model="startDate"  />
               </div>
               <div class="col-md-auto date-wrapper">
-                <label>Select end date</label>
+                <label class="date-label">Select end date</label>
                 <datepicker :disabledDates="{dates:[disabledDates]}" v-model="endDate"   />
               </div>
             </div>
@@ -161,6 +161,7 @@ export default defineComponent({
             border: 1px solid #6d6d6d;
             width: 265px;
             border-radius: 4px;
+            font-size: 16px;
           };
           .filter-btns-wrapper {
             text-align: left;
@@ -168,8 +169,7 @@ export default defineComponent({
           }
         .date-label {
           float: left;
-          font-size: 20px;
-          font-weight: 600;
+          font-size: 16px;
         }
         .parking-view-wrapper {
             display: grid;
@@ -185,6 +185,5 @@ export default defineComponent({
       --elem-hover-bg-color: var(--vdp-hover-bg, #EB008A); 
 
     } 
-
     
 </style>

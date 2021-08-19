@@ -21,13 +21,13 @@ import { defineComponent } from 'vue'
     .filter-btn {
       border-radius: 100px;
       padding: 4px 16px;
-      height: 32px;
-      font-size: 14px;
+      height: 38px;
+      font-size: 18px;
       font-weight: 700;
       color: white;
       background-color: transparent;
       border: 1px solid white;
-      margin-right: 10px;
+      margin-right: 15px;
       cursor: pointer;
     }
     .filter-btn.active{

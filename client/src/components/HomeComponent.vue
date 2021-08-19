@@ -36,7 +36,9 @@ import { defineComponent } from 'vue';
 import { mapGetters, mapMutations } from 'vuex';
 import parkingService from '../api/parkingService';
 import commonUtils from '../utils/commonUtils';
-import swal from "sweetalert";
+import Swal from 'sweetalert2'
+
+
 
 export default defineComponent({
   name: 'HomeComponent',
@@ -73,19 +75,24 @@ export default defineComponent({
     },
     
       async cancelParking() {
-        const data = await commonUtils.cancelConnection(this.getParkingSpot) as any;
-        if(data && data.deletedCount > 0) {
-          this.cleanParkingSpot();
-         swal("Congrats! This parking spot was cancel, you can check another one", {
-              icon: "success",
-         })
-        } else {
-          swal("Someone went wrong, please refresh the page and try again", {
-                icon: "error",
-            });
-        }
+        Swal.fire({
+          icon:'warning',
+          title: 'Are you sure you want to cancel your parking spot for today?',
+          showCancelButton: true,
+          confirmButtonText: `I'm sure!`,
+        }).then(async (result) => {
+          /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                const data = await commonUtils.cancelConnection(this.getParkingSpot) as any;
+                if(data && data.deletedCount > 0) {
+                    this.cleanParkingSpot();
+                    commonUtils.showSucssesModalWithoutTimer('Your parkings spot has been canceled!', true);
+                } else {
+                    commonUtils.showErrorModal('Someone went wrong, please refresh the page and try again')
+            }
+          } 
+        })
       }
-
   }
 });
 </script>
@@ -136,7 +143,7 @@ a {
   margin-bottom: 20px;
 }
 .parking-img-wrapper img{
-  width: 94px;
+  width: 130px;
   height: 250px;
 }
 .is-parking-wrapper {

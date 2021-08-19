@@ -1,6 +1,6 @@
 import parkingService from "@/api/parkingService";
 import { ParkingModel, ParkingsObj, ParkingSpotModel } from "@/models/parkingsModel";
-import swal from "sweetalert";
+import Swal from 'sweetalert2'
 
 export default class commonUtils{
 
@@ -84,6 +84,29 @@ export default class commonUtils{
               _data.push(obj);
         });
         return _data;
+    }
+    static showSucssesModal(title: string, showConfirmButton:boolean) {
+        Swal.fire({
+            icon: 'success',
+            title: title,
+            showConfirmButton: showConfirmButton,
+            timer: 2000
+          });
+    }
+    static showSucssesModalWithoutTimer(title: string, showConfirmButton:boolean) {
+        Swal.fire({
+            icon: 'success',
+            title: title,
+            showConfirmButton: showConfirmButton,
+          });
+    }
+    
+    static showErrorModal(title: string,  ) {
+        Swal.fire({
+            icon: 'error',
+            title: title,
+            showConfirmButton: true,
+          });
     }
 
 
