@@ -43,7 +43,7 @@ $shadow:#9aa5b3;
 
 .boxes {
     --size: 32px;
-    --duration: 800ms;
+    --duration: 700ms;
     height: calc(var(--size) * 2);
     width: calc(var(--size) * 3);
     position: absolute;
@@ -163,10 +163,6 @@ $shadow:#9aa5b3;
     }
 }
 
-html {
-    -webkit-font-smoothing: antialiased;
-}
-
 * {
     box-sizing: border-box;
     &:before,
@@ -176,23 +172,5 @@ html {
 }
 
 // Center & dribbble
-body {
-    min-height: 100vh;
-    font-family: Roboto, Arial;
-    color: #ADAFB6;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #F9FBFF;
-    .dribbble {
-        position: fixed;
-        display: block;
-        right: 20px;
-        bottom: 20px;
-        img {
-            display: block;
-            height: 28px;
-        }
-    }
-}
+
 </style>

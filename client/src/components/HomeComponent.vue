@@ -26,7 +26,7 @@
         <button  @click="cancelParking" type="button" class="btn btn-primary btn-lg orders-btn">Cancel reservation</button>
       </div>
         <div class="no-parking-spot-buttons-wrapper" v-else>
-          <button @click="generateParking" type="button" class="btn btn-primary btn-lg orders-btn">Generate parking spot for today</button>
+          <button @click="generateParking" type="button" class="btn btn-primary btn-lg orders-btn">Generate parking for today</button>
             <span>Or</span>
           <button @click="redirect" type="button" class="btn btn-primary btn-lg orders-btn">Book parking spots</button>
         </div>
